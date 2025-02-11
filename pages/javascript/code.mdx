@@ -1,0 +1,32 @@
+#### Write a Program to use a callback function?
+
+```javascript
+function great(mgs, fn) {
+  fn(mgs);
+}
+great("Message", (mgs) => console.log(mgs));
+```
+
+###### Output: `Message`
+
+#### Write a Program to add a property to an object and delete a property from an object?
+
+###### Add a property from an object:
+
+```
+const obj = { name: 'Kiba' };
+obj.age = 21;
+console.log(obj);
+```
+
+###### Output: `{ name: 'Riya', age: 21 }`
+
+###### Delete a property from an object:
+
+```
+const obj = { name: 'Riya', age: 21 };
+delete obj.age;
+console.log(obj);
+```
+
+###### Output: `{ name: 'Riya' }`
