@@ -1,0 +1,253 @@
+---
+title: "JavaScript Function Types"
+description: "A comprehensive guide to different types of functions in JavaScript"
+---
+
+## JavaScript Function Types
+
+JavaScript offers various types of functions, each with its own syntax, behavior, and use cases. This guide provides a detailed overview of the main function types you'll encounter in JavaScript development.
+
+#### Function Declaration
+
+The most basic type of function, defined using the `function` keyword. These functions are hoisted, meaning they can be called before their declaration in the code.
+
+```javascript
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+console.log(greet("Alice")); // Output: Hello, Alice!
+```
+
+**Key features:**
+
+- Supports hoisting
+- Has its own `this` context
+- Can be used as a constructor
+
+#### Function Expression
+
+A function assigned to a variable. Unlike function declarations, these are not hoisted.
+
+```javascript
+const greet = function (name) {
+  return `Hello, ${name}!`;
+};
+
+console.log(greet("Bob")); // Output: Hello, Bob!
+```
+
+**Key features:**
+
+- Not hoisted
+- Stored in a variable
+- More flexible for passing as arguments
+
+#### Arrow Function
+
+Introduced in ES6, arrow functions provide a concise syntax and lexical `this` binding.
+
+```javascript
+const add = (a, b) => a + b;
+console.log(add(3, 4)); // Output: 7
+
+// Single parameter (no parentheses needed)
+const square = (x) => x * x;
+
+// Multiple lines with explicit return
+const multiply = (a, b) => {
+  return a * b;
+};
+```
+
+**Key features:**
+
+- Shorter syntax
+- Lexical `this` binding
+- Cannot be used as a constructor
+- Great for callbacks and one-liners
+
+#### Immediately Invoked Function Expression (IIFE)
+
+A function that executes immediately after being defined.
+
+```javascript
+(function () {
+  console.log("I am an IIFE!");
+})();
+
+// Arrow function IIFE
+(() => {
+  console.log("I am an arrow IIFE!");
+})();
+```
+
+**Key features:**
+
+- Avoids global scope pollution
+- Creates private scope
+- Executes immediately
+
+#### Callback Function
+
+A function passed as an argument to another function, commonly used in asynchronous operations.
+
+```javascript
+function fetchData(callback) {
+  setTimeout(() => {
+    callback("Data received!");
+  }, 2000);
+}
+
+fetchData((data) => {
+  console.log(data); // Output after 2s: Data received!
+});
+```
+
+**Key features:**
+
+- Essential for async programming
+- Common in event handling
+- Enables function composition
+
+#### Higher-Order Function
+
+Functions that take other functions as arguments or return functions.
+
+```javascript
+function operate(a, b, operation) {
+  return operation(a, b);
+}
+
+const result = operate(5, 3, (x, y) => x + y);
+console.log(result); // Output: 8
+```
+
+**Key features:**
+
+- Enables functional programming patterns
+- Used in array methods like `.map()`
+- Increases code reusability
+
+#### Generator Function
+
+Special functions that can be paused and resumed using the `yield` keyword.
+
+```javascript
+function* count() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const counter = count();
+console.log(counter.next().value); // Output: 1
+console.log(counter.next().value); // Output: 2
+```
+
+**Key features:**
+
+- Memory efficient for large datasets
+- Can pause and resume execution
+- Enables custom iteration
+
+#### Async Function
+
+Functions that handle asynchronous operations with cleaner syntax using `async/await`.
+
+```javascript
+async function fetchData() {
+  const response = await fetch("https://api.example.com/data");
+  const data = await response.json();
+  return data;
+}
+
+// Usage
+fetchData().then((data) => console.log(data));
+```
+
+**Key features:**
+
+- Cleaner than promise chains
+- Better error handling
+- Synchronous-looking async code
+
+#### Class Methods
+
+Functions defined within classes, including static methods.
+
+```javascript
+class MathUtils {
+  static square(x) {
+    return x * x;
+  }
+
+  cube(x) {
+    return x * x * x;
+  }
+}
+
+console.log(MathUtils.square(4)); // Output: 16
+```
+
+**Key features:**
+
+- Static methods don't require instantiation
+- Can access class properties
+- Support inheritance
+
+#### Utility Function Patterns
+
+##### Currying
+
+```javascript
+const multiply = (a) => (b) => a * b;
+
+const double = multiply(2);
+console.log(double(4)); // Output: 8
+```
+
+##### Debouncing
+
+```javascript
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
+
+const debouncedLog = debounce((message) => console.log(message), 1000);
+```
+
+##### Throttling
+
+```javascript
+function throttle(func, limit) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - lastCall >= limit) {
+      lastCall = now;
+      func(...args);
+    }
+  };
+}
+
+const throttledLog = throttle((message) => console.log(message), 1000);
+```
+
+#### Best Practices
+
+1. Choose the appropriate function type based on your use case
+2. Use arrow functions for callbacks and simple operations
+3. Leverage async/await for asynchronous operations
+4. Consider performance implications when using generators
+5. Use utility patterns like debouncing and throttling for optimization
+
+#### Further Reading
+
+- [MDN Web Docs - Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
+- [JavaScript.info - Functions](https://javascript.info/function-basics)
+- [ES6 Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
