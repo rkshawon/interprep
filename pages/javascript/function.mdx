@@ -238,6 +238,210 @@ function throttle(func, limit) {
 const throttledLog = throttle((message) => console.log(message), 1000);
 ```
 
+---
+
+title: 'JavaScript Function Types'
+description: 'A comprehensive guide to different types of functions in JavaScript'
+
+---
+
+### Function Behaviors and Edge Cases
+
+#### Function Overriding
+
+Unlike languages that support function overloading, JavaScript overwrites functions with the same name.
+
+```javascript
+function greet() {
+  console.log("Hello from first function!");
+}
+
+function greet() {
+  console.log("Hello from second function!");
+}
+
+greet(); // Output: "Hello from second function!"
+```
+
+**Key points:**
+
+- Last function definition takes precedence
+- No native support for function overloading
+- Applies to both function declarations and expressions
+
+#### Parameter Handling
+
+##### Duplicate Parameter Names
+
+```javascript
+function demo(a, a, a) {
+  console.log(a);
+}
+
+demo(1, 2, 3); // Output: 3 (Last 'a' takes priority)
+```
+
+**Important notes:**
+
+- Last parameter overwrites previous ones
+- Throws error in strict mode
+- Not recommended in modern JavaScript
+
+##### Argument Flexibility
+
+JavaScript functions can handle varying numbers of arguments:
+
+```javascript
+// Fewer arguments than parameters
+function add(a, b) {
+  console.log(a, b);
+}
+add(5); // Output: 5 undefined
+
+// More arguments than parameters
+function sum(a, b) {
+  console.log(a + b);
+}
+sum(3, 4, 5, 6); // Output: 7 (extra arguments ignored)
+```
+
+##### Accessing All Arguments
+
+Using the `arguments` object (traditional functions only):
+
+```javascript
+function sumAll() {
+  console.log(arguments);
+  return Array.from(arguments).reduce((sum, num) => sum + num, 0);
+}
+
+sumAll(1, 2, 3, 4); // Access to all arguments
+```
+
+Using rest parameters (modern approach):
+
+```javascript
+function sumAll(...numbers) {
+  return numbers.reduce((sum, num) => sum + num, 0);
+}
+```
+
+#### Default Parameters
+
+Modern JavaScript supports parameter default values:
+
+```javascript
+function greet(name = "Guest", greeting = "Hello") {
+  console.log(`${greeting}, ${name}!`);
+}
+
+greet(); // Output: Hello, Guest!
+greet("Alice"); // Output: Hello, Alice!
+greet("Bob", "Hi"); // Output: Hi, Bob!
+```
+
+#### Function Scope and `this` Behavior
+
+##### Regular Functions vs Arrow Functions
+
+```javascript
+const obj = {
+  name: "Alice",
+  // Regular function (dynamic this)
+  greetRegular: function () {
+    console.log(this.name); // Output: Alice
+  },
+  // Arrow function (lexical this)
+  greetArrow: () => {
+    console.log(this.name); // Output: undefined
+  },
+};
+```
+
+**Key differences:**
+
+- Regular functions: `this` depends on how the function is called
+- Arrow functions: `this` is inherited from the enclosing scope
+- Arrow functions cannot be used as constructors
+
+#### Function Hoisting Behavior
+
+JavaScript hoists function declarations but not expressions:
+
+```javascript
+// Works: function declaration is hoisted
+hoistedFunc(); // Output: "I am hoisted!"
+function hoistedFunc() {
+  console.log("I am hoisted!");
+}
+
+// Throws error: function expression is not hoisted
+notHoisted(); // TypeError
+const notHoisted = function () {
+  console.log("I am not hoisted!");
+};
+```
+
+#### Recursive Functions
+
+Functions can call themselves to solve problems iteratively:
+
+```javascript
+function factorial(n) {
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
+}
+
+console.log(factorial(5)); // Output: 120
+```
+
+**Common use cases:**
+
+- Mathematical calculations
+- Tree traversal
+- Complex data structure operations
+
+#### Function Composition
+
+Functions returning other functions enable powerful composition patterns:
+
+```javascript
+const addPrefix = (prefix) => {
+  return (str) => {
+    return `${prefix}${str}`;
+  };
+};
+
+const addHello = addPrefix("Hello, ");
+console.log(addHello("World")); // Output: Hello, World
+```
+
+#### Best Practices for Function Behavior
+
+1. Use strict mode to catch parameter naming errors
+2. Prefer rest parameters over the `arguments` object
+3. Use arrow functions for callbacks and lexical `this` binding
+4. Provide default parameters for optional values
+5. Avoid function overriding by using unique names
+6. Be careful with recursive functions to prevent stack overflow
+7. Use clear parameter names and avoid duplicates
+
+#### Common Pitfalls
+
+1. Forgetting that arrow functions don't have their own `this`
+2. Relying on function hoisting
+3. Not handling missing parameters
+4. Incorrect use of recursion leading to infinite loops
+5. Confusion about function scope and closure behavior
+
+#### Performance Considerations
+
+1. Be mindful of recursive function depth
+2. Use memoization for expensive calculations
+3. Consider the cost of creating function closures
+4. Be careful with function parameters in loops
+5. Optimize function composition for heavy operations
+
 #### Best Practices
 
 1. Choose the appropriate function type based on your use case
@@ -245,9 +449,3 @@ const throttledLog = throttle((message) => console.log(message), 1000);
 3. Leverage async/await for asynchronous operations
 4. Consider performance implications when using generators
 5. Use utility patterns like debouncing and throttling for optimization
-
-#### Further Reading
-
-- [MDN Web Docs - Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions)
-- [JavaScript.info - Functions](https://javascript.info/function-basics)
-- [ES6 Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
