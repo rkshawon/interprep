@@ -13,8 +13,8 @@ great("Message", (mgs) => console.log(mgs));
 
 ###### Add a property from an object:
 
-```
-const obj = { name: 'Kiba' };
+```javascript
+const obj = { name: "Kiba" };
 obj.age = 21;
 console.log(obj);
 ```
@@ -23,10 +23,21 @@ console.log(obj);
 
 ###### Delete a property from an object:
 
-```
-const obj = { name: 'Riya', age: 21 };
+```javascript
+const obj = { name: "Riya", age: 21 };
 delete obj.age;
 console.log(obj);
 ```
 
 ###### Output: `{ name: 'Riya' }`
+
+#### Write a function which duplicates the array items?
+
+```javascript
+function dup(arr) {
+  return [...arr, ...arr];
+}
+console.log(dup([1, 2, 3]));
+```
+
+###### Output: `[1, 2, 3, 1, 2, 3]`
