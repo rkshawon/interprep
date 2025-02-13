@@ -449,3 +449,18 @@ console.log(addHello("World")); // Output: Hello, World
 3. Leverage async/await for asynchronous operations
 4. Consider performance implications when using generators
 5. Use utility patterns like debouncing and throttling for optimization
+
+#### Function Behavior Summary Table
+
+| Behavior                  | Explanation                                             |
+| ------------------------- | ------------------------------------------------------- |
+| Duplicate function names  | Last function overwrites the previous one               |
+| Duplicate parameter names | Last parameter takes priority (error in strict mode)    |
+| Extra/missing arguments   | Extra arguments ignored, missing become `undefined`     |
+| Default parameters        | Provide fallback values for missing arguments           |
+| Function hoisting         | Only function declarations are hoisted, not expressions |
+| Arrow vs Normal functions | Arrow functions do not have their own `this`            |
+| Rest parameters           | Collects all extra arguments into an array              |
+| Callbacks                 | Functions passed as arguments for async operations      |
+| Recursion                 | Functions calling themselves to solve problems          |
+| Function composition      | Functions returning other functions for composition     |

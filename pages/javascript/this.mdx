@@ -1,0 +1,265 @@
+---
+title: "Understanding 'this' in JavaScript"
+description: "A comprehensive guide to how 'this' behaves in different JavaScript contexts"
+---
+
+## Understanding `this` in JavaScript
+
+The `this` keyword in JavaScript is a special identifier that changes its behavior based on how and where a function is called. This guide explores every context where `this` behaves differently and explains why.
+
+#### Global Context
+
+Outside any function, `this` refers to the global object:
+
+```javascript
+console.log(this);
+// Browser: Window { ... }
+// Node.js: {} (strict mode) or global (non-strict mode)
+```
+
+**Environment specific behavior:**
+
+- Browser: References the `window` object
+- Node.js: References the `global` object or empty object in strict mode
+
+#### Regular Functions
+
+The behavior of `this` in regular functions depends on strict mode:
+
+```javascript
+// Non-strict mode
+function showThis() {
+  console.log(this);
+}
+showThis(); // Window or global object
+
+// Strict mode
+("use strict");
+function showThisStrict() {
+  console.log(this);
+}
+showThisStrict(); // undefined
+```
+
+**Key points:**
+
+- Non-strict mode: `this` defaults to global object
+- Strict mode: `this` is `undefined`
+- Behavior depends on how function is called, not where it's defined
+
+#### Object Methods
+
+When a function is called as an object method, `this` refers to the object itself:
+
+```javascript
+const obj = {
+  name: "Alice",
+  showThis: function () {
+    console.log(this.name);
+  },
+};
+
+obj.showThis(); // Output: Alice
+```
+
+**Why this works:**
+
+- Method is called on `obj`
+- `this` refers to the object that owns the method
+- Maintains object context
+
+#### Arrow Functions
+
+Arrow functions have lexical `this` binding, inheriting `this` from their surrounding scope:
+
+```javascript
+const obj = {
+  name: "Alice",
+  // Arrow function in object
+  showThis: () => {
+    console.log(this);
+  },
+  // Regular function with nested arrow function
+  regularMethod: function () {
+    const arrowFunc = () => {
+      console.log(this.name);
+    };
+    arrowFunc();
+  },
+};
+
+obj.showThis(); // Window or global
+obj.regularMethod(); // Alice
+```
+
+**Important characteristics:**
+
+- No own `this` binding
+- Inherits `this` from enclosing scope
+- Cannot be used as constructors
+- Great for callbacks and event handlers
+
+#### Constructor Functions
+
+When using the `new` keyword, `this` refers to the newly created instance:
+
+```javascript
+function Person(name) {
+  this.name = name;
+  this.sayHi = function () {
+    console.log(`Hi, I'm ${this.name}`);
+  };
+}
+
+const person = new Person("Alice");
+person.sayHi(); // Output: Hi, I'm Alice
+```
+
+**Construction process:**
+
+1. New object is created
+2. `this` is bound to new object
+3. Object is returned automatically
+
+#### Class Methods
+
+In JavaScript classes, `this` refers to the instance of the class:
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayHello() {
+    console.log(`Hello, ${this.name}`);
+  }
+
+  // Arrow method
+  greet = () => {
+    console.log(`Greetings, ${this.name}`);
+  };
+}
+
+const person = new Person("Alice");
+person.sayHello(); // Output: Hello, Alice
+person.greet(); // Output: Greetings, Alice
+```
+
+**Class behavior:**
+
+- Regular methods: `this` refers to instance
+- Arrow methods: Preserve `this` context
+- Constructor: Sets up initial state
+
+#### Event Listeners
+
+The behavior of `this` in event listeners varies by function type:
+
+```javascript
+// Regular function
+element.addEventListener("click", function () {
+  console.log(this); // The DOM element
+});
+
+// Arrow function
+element.addEventListener("click", () => {
+  console.log(this); // Window or global
+});
+```
+
+**Context differences:**
+
+- Regular functions: `this` is the event target
+- Arrow functions: `this` is from outer scope
+
+#### Timers and Intervals
+
+`setTimeout` and `setInterval` have special `this` behavior:
+
+```javascript
+// Regular function
+setTimeout(function () {
+  console.log(this); // Window or global
+}, 1000);
+
+// Arrow function
+setTimeout(() => {
+  console.log(this); // Inherited from outer scope
+}, 1000);
+```
+
+#### Explicit Binding
+
+JavaScript provides methods to explicitly set `this`:
+
+```javascript
+function greet() {
+  console.log(`Hello, ${this.name}`);
+}
+
+const user = { name: "Alice" };
+
+// Using call
+greet.call(user); // Output: Hello, Alice
+
+// Using apply
+greet.apply(user); // Output: Hello, Alice
+
+// Using bind
+const boundGreet = greet.bind(user);
+boundGreet(); // Output: Hello, Alice
+```
+
+**Binding methods:**
+
+- `call`: Immediate invocation with arguments list
+- `apply`: Immediate invocation with arguments array
+- `bind`: Returns new function with bound context
+
+#### Prototype Methods
+
+`this` in prototype methods refers to the instance:
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+
+Person.prototype.sayHello = function () {
+  console.log(`Hello, ${this.name}`);
+};
+
+const person = new Person("Alice");
+person.sayHello(); // Output: Hello, Alice
+```
+
+#### Best Practices
+
+1. Use arrow functions for callbacks to preserve `this`
+2. Be explicit about context in object methods
+3. Use `bind` when passing methods as callbacks
+4. Consider strict mode to prevent global `this`
+5. Document `this` behavior in complex scenarios
+
+#### Common Pitfalls
+
+1. Losing `this` context in callbacks
+2. Confusion with arrow functions in methods
+3. Forgetting to bind event handlers
+4. Assuming `this` in nested functions
+5. Mixing regular and arrow functions inappropriately
+
+#### Summary Table
+
+| Context          | `this` References                |
+| ---------------- | -------------------------------- |
+| Global Scope     | `window`/`global`                |
+| Regular Function | `window`/`global` or `undefined` |
+| Object Method    | Object itself                    |
+| Arrow Function   | Lexical scope                    |
+| Constructor      | New instance                     |
+| Class Method     | Class instance                   |
+| Event Listener   | Event target                     |
+| Timer Functions  | `window`/`global`                |
+| Explicit Binding | Specified object                 |
