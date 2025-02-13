@@ -2,5 +2,6 @@
   "basic": "Basic",
   "function": "Functions",
   "this": "This Keyword",
+  "scope_hoisting": "Scope and Hoisting",
   "code": "Code"
 }
