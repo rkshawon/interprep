@@ -44,6 +44,8 @@ console.log(a); // ✅ 10
 - `let` is block-scoped (only accessible within `{}`).
 - Cannot be redeclared in the same scope.
 - Hoisted but in Temporal Dead Zone (TDZ).
+- The TDZ is the period between entering a scope where a variable is declared and the actual declaration/initialization of that variable.
+  During this period, we cannot access the variable, even though it exists (is hoisted).
 
 ```javascript
 let b = 15;
