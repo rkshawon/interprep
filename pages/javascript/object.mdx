@@ -1,0 +1,318 @@
+## JavaScript Objects - Complete Guide 🚀
+
+#### 1. **Introduction**
+
+Objects in JavaScript are **collections of key-value pairs**. They allow storing multiple values, including functions.
+
+```javascript
+const person = {
+  name: "Alice",
+  age: 25,
+  greet: function () {
+    console.log(`Hello, my name is ${this.name}`);
+  },
+};
+
+person.greet(); // Output: Hello, my name is Alice
+```
+
+#### 2. Ways to Create Objects
+
+##### 1️⃣ Using Object Literal (Most Common)
+
+```javascript
+const user = {
+  name: "John",
+  age: 30,
+};
+```
+
+##### 2️⃣ Using new Object()
+
+```javascript
+const obj = new Object();
+obj.name = "John";
+obj.age = 30;
+```
+
+##### 3️⃣ Using Constructor Function
+
+```javascript
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+const person1 = new Person("Alice", 25);
+console.log(person1.name); // Alice
+```
+
+##### 4️⃣ Using Object.create()
+
+Creates an object with a specified prototype.
+
+```javascript
+const prototypeObj = {
+  greet: function () {
+    console.log("Hello!");
+  },
+};
+const obj = Object.create(prototypeObj);
+obj.greet(); // Output: Hello!
+```
+
+##### 5️⃣ Using ES6 Classes
+
+```javascript
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+}
+const person2 = new Person("Bob", 28);
+console.log(person2.name); // Bob
+```
+
+#### 3. Accessing Object Properties
+
+##### Dot Notation
+
+```javascript
+console.log(user.name); // John
+```
+
+##### Bracket Notation
+
+```javascript
+console.log(user["age"]); // 30
+```
+
+##### Dynamic Property Access
+
+```javascript
+const key = "name";
+console.log(user[key]); // John
+```
+
+#### 4. Adding, Modifying, and Deleting Properties
+
+```javascript
+const car = {};
+car.brand = "Toyota"; // Adding
+car.brand = "Honda"; // Modifying
+delete car.brand; // Deleting
+console.log(car); // {}
+```
+
+#### 5. Checking If a Property Exists
+
+##### 1️⃣ Using in Operator
+
+```javascript
+console.log("name" in user); // true
+console.log("salary" in user); // false
+```
+
+##### 2️⃣ Using hasOwnProperty()
+
+```javascript
+console.log(user.hasOwnProperty("age")); // true
+console.log(user.hasOwnProperty("salary")); // false
+```
+
+#### 6. Iterating Over Object Properties
+
+##### 1️⃣ Using for...in
+
+```javascript
+for (let key in user) {
+  console.log(`${key}: ${user[key]}`);
+}
+// name: John
+// age: 30
+```
+
+##### 2️⃣ Using Object.keys()
+
+Returns an array of keys.
+
+```javascript
+console.log(Object.keys(user)); // ["name", "age"]
+```
+
+##### 3️⃣ Using Object.values()
+
+Returns an array of values.
+
+```javascript
+console.log(Object.values(user)); // ["John", 30]
+```
+
+##### 4️⃣ Using Object.entries()
+
+Returns an array of key-value pairs.
+
+```javascript
+console.log(Object.entries(user)); // [["name", "John"], ["age", 30]]
+```
+
+#### 7. Object Methods (this Keyword)
+
+##### Adding Methods
+
+```javascript
+const person = {
+  name: "Alice",
+  greet() {
+    console.log(`Hello, I am ${this.name}`);
+  },
+};
+
+person.greet(); // Hello, I am Alice
+```
+
+#### 8. Object Cloning and Merging
+
+##### 1️⃣ Using Object.assign()
+
+```javascript
+const obj1 = { a: 1 };
+const obj2 = Object.assign({}, obj1);
+console.log(obj2); // { a: 1 }
+```
+
+##### 2️⃣ Using Spread Operator
+
+```javascript
+const obj3 = { ...obj1 };
+console.log(obj3); // { a: 1 }
+```
+
+#### 9. Object Freezing & Sealing
+
+##### Freezing (Object.freeze())
+
+Prevents adding, modifying, and deleting properties.
+
+```javascript
+const frozenObj = Object.freeze({ name: "Frozen" });
+frozenObj.name = "Changed"; // ❌ Won't work
+delete frozenObj.name; // ❌ Won't work
+console.log(frozenObj); // { name: "Frozen" }
+```
+
+##### Sealing (Object.seal())
+
+Prevents adding or deleting properties but allows modification.
+
+```javascript
+const sealedObj = Object.seal({ name: "Sealed" });
+sealedObj.name = "Modified"; // ✅ Allowed
+delete sealedObj.name; // ❌ Won't work
+console.log(sealedObj); // { name: "Modified" }
+```
+
+#### 10. Prototypes and Inheritance
+
+##### Prototype Chain
+
+```javascript
+function Animal(name) {
+  this.name = name;
+}
+
+Animal.prototype.speak = function () {
+  console.log(`${this.name} makes a noise.`);
+};
+
+const dog = new Animal("Dog");
+dog.speak(); // Dog makes a noise.
+```
+
+##### ES6 Class Inheritance
+
+```javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    console.log(`${this.name} makes a noise.`);
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log(`${this.name} barks.`);
+  }
+}
+
+const myDog = new Dog("Buddy");
+myDog.speak(); // Buddy barks.
+```
+
+#### 11. Property Descriptors
+
+##### Using Object.getOwnPropertyDescriptor()
+
+```javascript
+const obj = { name: "Alice" };
+console.log(Object.getOwnPropertyDescriptor(obj, "name"));
+/*
+{
+  value: "Alice",
+  writable: true,
+  enumerable: true,
+  configurable: true
+}
+*/
+```
+
+#### 12. Common Interview Questions
+
+##### Q1: What's the difference between Object.freeze() and Object.seal()?
+
+✅ Answer:
+
+- Object.freeze() ❌ No modification, No addition, No deletion.
+- Object.seal() ✅ Modification allowed, No addition, No deletion.
+
+##### Q2: How do you check if an object has a property?
+
+✅ Answer:
+
+- "key" in obj
+- obj.hasOwnProperty("key")
+- Object.keys(obj).includes("key")
+
+##### Q3: What is the difference between shallow copy and deep copy?
+
+✅ Answer:
+
+- Shallow Copy → Copies only references (changes affect original).
+- Deep Copy → Copies everything independently.
+
+######## Example: Shallow Copy
+
+```javascript
+const obj = { name: "Alice", details: { age: 25 } };
+const shallowCopy = { ...obj };
+shallowCopy.details.age = 30;
+console.log(obj.details.age); // 30 (Modified)
+```
+
+###### Example: Deep Copy (Using structuredClone() in modern JS)
+
+```javascript
+const deepCopy = structuredClone(obj);
+deepCopy.details.age = 40;
+console.log(obj.details.age); // 30 (Unchanged)
+```
+
+#### Conclusion
+
+- JavaScript objects are key-value pairs with powerful features.
+- Use dot notation or bracket notation to access properties.
+- Utilize Object.freeze(), Object.seal() to control modifications.
+- Understand prototypes for inheritance.
+- Know shallow vs deep copy to avoid unintended modifications.
