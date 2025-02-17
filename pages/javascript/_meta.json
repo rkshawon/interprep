@@ -5,5 +5,6 @@
   "scope_hoisting": "Scope and Hoisting",
   "var_let_const": "Var, Let and Const",
   "object": "Object",
+  "setTimeout_setInterval": "SetTimeout and SetInterval",
   "code": "Code"
 }

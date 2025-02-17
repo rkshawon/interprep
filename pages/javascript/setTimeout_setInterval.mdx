@@ -1,0 +1,245 @@
+---
+title: "JavaScript setTimeout & setInterval - Complete Guide"
+description: "A comprehensive guide to using setTimeout and setInterval in JavaScript, including best practices, common pitfalls, and real-world examples."
+date: "2025-02-17"
+tags: ["javascript", "async", "timers", "setTimeout", "setInterval"]
+---
+
+# JavaScript `setTimeout` & `setInterval` - Complete Guide 🚀
+
+## Introduction
+
+`setTimeout` and `setInterval` are **asynchronous JavaScript functions** used for executing code after a delay or at repeated intervals.
+
+- **`setTimeout(callback, delay)`** executes a function **once** after a given delay
+- **`setInterval(callback, interval)`** repeatedly executes a function after each interval
+
+## setTimeout - Delaying Execution
+
+### Basic Syntax
+
+```javascript
+setTimeout(function, delay, param1, param2, ...);
+```
+
+Where:
+
+- `function`: The function to execute after delay
+- `delay`: Time in milliseconds (1000ms = 1 second)
+- `param1, param2, ...`: Optional parameters passed to the function
+
+### Example: Basic Usage
+
+```javascript
+console.log("Before setTimeout");
+setTimeout(() => {
+  console.log("Executed after 2 seconds");
+}, 2000);
+console.log("After setTimeout");
+
+// Output:
+// Before setTimeout
+// After setTimeout
+// Executed after 2 seconds
+```
+
+> 💡 Note: setTimeout does not pause execution; it schedules the function to run later.
+
+## setInterval - Repeated Execution
+
+### Basic Syntax
+
+```javascript
+setInterval(function, interval, param1, param2, ...);
+```
+
+### Example: Print Every 2 Seconds
+
+```javascript
+let count = 1;
+setInterval(() => {
+  console.log(`Interval executed ${count} times`);
+  count++;
+}, 2000);
+
+// Output:
+// Interval executed 1 times
+// Interval executed 2 times
+// Interval executed 3 times ...
+```
+
+## Stopping Execution
+
+### clearTimeout
+
+```javascript
+const timeoutId = setTimeout(() => {
+  console.log("This will not execute");
+}, 5000);
+
+clearTimeout(timeoutId);
+console.log("Timeout cleared");
+
+// Output:
+// Timeout cleared
+```
+
+### clearInterval
+
+```javascript
+let counter = 0;
+const intervalId = setInterval(() => {
+  console.log(`Counter: ${counter}`);
+  counter++;
+  if (counter === 5) {
+    clearInterval(intervalId);
+    console.log("Interval cleared");
+  }
+}, 1000);
+
+// Output:
+// Counter: 0
+// Counter: 1
+// Counter: 2
+// Counter: 3
+// Counter: 4
+// Interval cleared
+```
+
+## Passing Arguments
+
+```javascript
+function greet(name, age) {
+  console.log(`Hello ${name}, you are ${age} years old`);
+}
+
+setTimeout(greet, 2000, "Alice", 25);
+setInterval(greet, 3000, "Bob", 30);
+```
+
+## setTimeout Inside Loops
+
+### Common Pitfall: Closure Issue
+
+```javascript
+for (var i = 1; i <= 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+
+// Output (after 1s):
+// 4
+// 4
+// 4
+```
+
+### Solution 1: Using let
+
+```javascript
+for (let i = 1; i <= 3; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 1000);
+}
+
+// Output (after 1s):
+// 1
+// 2
+// 3
+```
+
+### Solution 2: Using IIFE
+
+```javascript
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(() => {
+      console.log(j);
+    }, 1000);
+  })(i);
+}
+```
+
+## Nested setTimeout vs setInterval
+
+```javascript
+let count = 0;
+function repeat() {
+  console.log(`Executed ${count + 1} times`);
+  count++;
+  if (count < 5) {
+    setTimeout(repeat, 1000);
+  }
+}
+repeat();
+```
+
+## Real-World Examples
+
+### Countdown Timer
+
+```javascript
+let seconds = 5;
+const timer = setInterval(() => {
+  console.log(`Time left: ${seconds}`);
+  seconds--;
+  if (seconds < 0) {
+    clearInterval(timer);
+    console.log("Time's up!");
+  }
+}, 1000);
+```
+
+### Debouncing Function
+
+```javascript
+let timeout;
+function onResize() {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    console.log("Window resized!");
+  }, 500);
+}
+
+window.addEventListener("resize", onResize);
+```
+
+## Common Interview Questions
+
+### Q1: What's the difference between setTimeout and setInterval?
+
+- `setTimeout` executes once after a delay
+- `setInterval` executes repeatedly after an interval
+
+### Q2: What happens if the function inside setInterval takes longer than the interval?
+
+If the function takes longer than the interval, calls can overlap. Use nested `setTimeout` to avoid this issue:
+
+```javascript
+setInterval(() => {
+  console.log("Start task");
+  for (let i = 0; i < 1e9; i++); // Simulating heavy task
+  console.log("End task");
+}, 1000);
+```
+
+### Q3: Can setTimeout delay be 0ms?
+
+Yes, but it won't execute immediately. It goes into the Event Queue and executes after the current execution stack is clear:
+
+```javascript
+setTimeout(() => console.log("Hello!"), 0);
+console.log("World!");
+
+// Output:
+// World!
+// Hello!  (Executes after the stack clears)
+```
+
+## Key Takeaways
+
+1. `setTimeout` delays execution, while `setInterval` repeats execution
+2. Always clear timers using `clearTimeout` and `clearInterval` when no longer needed
+3. Use nested `setTimeout` instead of `setInterval` to prevent overlapping
+4. `setTimeout(fn, 0)` executes after the call stack clears
