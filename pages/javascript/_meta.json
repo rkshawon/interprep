@@ -1,6 +1,7 @@
 {
   "basic": "Basic",
   "function": "Functions",
+  "functional_programing": "Functions Programing",
   "this": "This Keyword",
   "scope_hoisting": "Scope and Hoisting",
   "var_let_const": "Var, Let and Const",
