@@ -1,0 +1,175 @@
+## Functional vs. Procedural vs. Methods in Programming
+
+Programming paradigms define how a program is structured and how logic is implemented. The three major paradigms discussed here are:
+
+1. **Procedural Programming** (Imperative)
+2. **Functional Programming** (Declarative)
+3. **Methods** (Object-Oriented Approach)
+
+#### 1. Imperative vs. Declarative Programming
+
+Before diving into **functional** and **procedural** programming, let's first understand **imperative** and **declarative** programming styles.
+
+##### 1.1 Imperative Programming
+
+- **Defines "how" a task should be performed.**
+- Uses **step-by-step** instructions (explicit control flow).
+- Involves **loops, conditionals, and mutable states**.
+
+###### Example: Imperative Approach (C-like)
+
+```c
+int sum = 0;
+for (int i = 1; i <= 5; i++) {
+    sum += i;
+}
+printf("%d", sum); // Output: 15
+```
+
+✅ Explicitly specifies each step to calculate the sum.
+
+##### 1.2 Declarative Programming
+
+- Defines "what" should be done rather than "how".
+- Focuses on expressions and results rather than control flow.
+- Used in Functional Programming, SQL, and React.
+
+######## Example: Declarative Approach (Haskell-like)
+
+```haskell
+sumList xs = sum xs
+main = print(sumList [1,2,3,4,5]) -- Output: 15
+```
+
+✅ No explicit iteration; just a function applying sum.
+
+#### 2. Procedural Programming (Imperative)
+
+Procedural Programming is an imperative paradigm where programs are structured as a sequence of procedures (functions).
+
+##### 2.1 Characteristics
+
+- Follows a step-by-step approach (like a recipe).
+- Uses procedures (functions) to break code into reusable blocks.
+- Modifies global state (mutable data).
+- Example languages: C, Pascal, Python (procedural style).
+
+######## Example: Procedural Approach (C)
+
+```c
+#include <stdio.h>
+
+// Function (Procedure)
+void greet() {
+    printf("Hello, World!\n");
+}
+
+int main() {
+    greet(); // Call the procedure
+    return 0;
+}
+```
+
+✅ Breaks the code into reusable functions but modifies state directly.
+
+#### 3. Functional Programming (Declarative)
+
+Functional Programming (FP) is a declarative paradigm where functions:
+
+- Avoid side effects (immutability).
+- Treat functions as first-class citizens.
+- Use pure functions and higher-order functions.
+- Example languages: Haskell, Lisp, Scala, JavaScript (functional style).
+
+##### 3.1 Characteristics
+
+- Pure functions (same input → same output).
+- Immutability (no modification of state).
+- Recursion instead of loops.
+- Higher-order functions (functions taking/returning functions).
+
+######## Example: Functional Approach (Haskell)
+
+```haskell
+double x = x * 2  -- Pure function
+square x = x * x
+
+main = print (square (double 3)) -- Output: 36
+```
+
+✅ No state modification, only function composition.
+
+######## Example: Functional Approach (Python)
+
+```python
+# Pure function
+def add(a, b):
+    return a + b
+
+print(add(2, 3)) # Output: 5
+```
+
+✅ No state change, only input → output transformation.
+
+#### 4. Object-Oriented Methods
+
+In Object-Oriented Programming (OOP), methods are functions that belong to objects.
+
+##### 4.1 Characteristics
+
+- Methods are defined inside classes.
+- Methods operate on object data.
+- Uses concepts like Encapsulation, Inheritance, and Polymorphism.
+- Example languages: Java, C++, Python (OOP style).
+
+######## Example: Object-Oriented Method (Python)
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def greet(self):  # Method
+        return f"Hello, {self.name}!"
+
+# Creating an object
+p = Person("Alice")
+print(p.greet())  # Output: Hello, Alice!
+```
+
+✅ Methods work on object-specific data (self.name).
+
+#### 5. Procedural vs Functional vs Object-Oriented (Comparison Table)
+
+| Feature        | Procedural Programming            | Functional Programming                     | Object-Oriented Programming |
+| -------------- | --------------------------------- | ------------------------------------------ | --------------------------- |
+| Paradigm       | Imperative                        | Declarative                                | Imperative + Declarative    |
+| Main Unit      | Procedures/Functions              | Pure Functions                             | Classes & Objects           |
+| State Handling | Modifies global state             | Immutable Data                             | Encapsulated State          |
+| Code Structure | Step-by-step sequence             | Function composition                       | Object-based                |
+| Side Effects   | Allowed                           | Avoided                                    | Allowed inside methods      |
+| Use Cases      | Small scripts, system programming | Data transformations, functional pipelines | Large-scale applications    |
+
+#### 6. When to Use What?
+
+| Situation                                      | Best Approach   |
+| ---------------------------------------------- | --------------- |
+| Need explicit step-by-step control             | Procedural      |
+| Need data transformations & pure logic         | Functional      |
+| Need real-world modeling (entities, behaviors) | Object-Oriented |
+
+##### Real-World Use Cases
+
+- Procedural → Low-level system programs (C)
+- Functional → Data transformations (Haskell, Python Pandas)
+- OOP → Large applications (Java, C# Web Apps)
+
+#### Conclusion
+
+Each paradigm has its advantages:
+
+- Procedural is simple and efficient but modifies global state.
+- Functional is clean and predictable but can be harder to learn.
+- Object-Oriented is real-world friendly but can be complex.
+
+Knowing when to use functional, procedural, or OOP helps write better software! 🚀
