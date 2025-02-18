@@ -5,18 +5,18 @@ date: "2025-02-17"
 tags: ["javascript", "async", "timers", "setTimeout", "setInterval"]
 ---
 
-# JavaScript `setTimeout` & `setInterval` - Complete Guide 🚀
+## JavaScript `setTimeout` & `setInterval` - Complete Guide 🚀
 
-## Introduction
+#### Introduction
 
 `setTimeout` and `setInterval` are **asynchronous JavaScript functions** used for executing code after a delay or at repeated intervals.
 
 - **`setTimeout(callback, delay)`** executes a function **once** after a given delay
 - **`setInterval(callback, interval)`** repeatedly executes a function after each interval
 
-## setTimeout - Delaying Execution
+#### setTimeout - Delaying Execution
 
-### Basic Syntax
+##### Basic Syntax
 
 ```javascript
 setTimeout(function, delay, param1, param2, ...);
@@ -28,7 +28,7 @@ Where:
 - `delay`: Time in milliseconds (1000ms = 1 second)
 - `param1, param2, ...`: Optional parameters passed to the function
 
-### Example: Basic Usage
+##### Example: Basic Usage
 
 ```javascript
 console.log("Before setTimeout");
@@ -45,15 +45,15 @@ console.log("After setTimeout");
 
 > 💡 Note: setTimeout does not pause execution; it schedules the function to run later.
 
-## setInterval - Repeated Execution
+#### setInterval - Repeated Execution
 
-### Basic Syntax
+##### Basic Syntax
 
 ```javascript
 setInterval(function, interval, param1, param2, ...);
 ```
 
-### Example: Print Every 2 Seconds
+##### Example: Print Every 2 Seconds
 
 ```javascript
 let count = 1;
@@ -68,9 +68,9 @@ setInterval(() => {
 // Interval executed 3 times ...
 ```
 
-## Stopping Execution
+#### Stopping Execution
 
-### clearTimeout
+##### clearTimeout
 
 ```javascript
 const timeoutId = setTimeout(() => {
@@ -84,7 +84,7 @@ console.log("Timeout cleared");
 // Timeout cleared
 ```
 
-### clearInterval
+##### clearInterval
 
 ```javascript
 let counter = 0;
@@ -106,7 +106,7 @@ const intervalId = setInterval(() => {
 // Interval cleared
 ```
 
-## Passing Arguments
+#### Passing Arguments
 
 ```javascript
 function greet(name, age) {
@@ -117,9 +117,9 @@ setTimeout(greet, 2000, "Alice", 25);
 setInterval(greet, 3000, "Bob", 30);
 ```
 
-## setTimeout Inside Loops
+#### setTimeout Inside Loops
 
-### Common Pitfall: Closure Issue
+##### Common Pitfall: Closure Issue
 
 ```javascript
 for (var i = 1; i <= 3; i++) {
@@ -134,7 +134,7 @@ for (var i = 1; i <= 3; i++) {
 // 4
 ```
 
-### Solution 1: Using let
+##### Solution 1: Using let
 
 ```javascript
 for (let i = 1; i <= 3; i++) {
@@ -149,7 +149,7 @@ for (let i = 1; i <= 3; i++) {
 // 3
 ```
 
-### Solution 2: Using IIFE
+##### Solution 2: Using IIFE
 
 ```javascript
 for (var i = 1; i <= 3; i++) {
@@ -161,7 +161,7 @@ for (var i = 1; i <= 3; i++) {
 }
 ```
 
-## Nested setTimeout vs setInterval
+#### Nested setTimeout vs setInterval
 
 ```javascript
 let count = 0;
@@ -175,9 +175,9 @@ function repeat() {
 repeat();
 ```
 
-## Real-World Examples
+#### Real-World Examples
 
-### Countdown Timer
+##### Countdown Timer
 
 ```javascript
 let seconds = 5;
@@ -191,7 +191,7 @@ const timer = setInterval(() => {
 }, 1000);
 ```
 
-### Debouncing Function
+##### Debouncing Function
 
 ```javascript
 let timeout;
@@ -205,14 +205,14 @@ function onResize() {
 window.addEventListener("resize", onResize);
 ```
 
-## Common Interview Questions
+#### Common Interview Questions
 
-### Q1: What's the difference between setTimeout and setInterval?
+##### Q1: What's the difference between setTimeout and setInterval?
 
 - `setTimeout` executes once after a delay
 - `setInterval` executes repeatedly after an interval
 
-### Q2: What happens if the function inside setInterval takes longer than the interval?
+##### Q2: What happens if the function inside setInterval takes longer than the interval?
 
 If the function takes longer than the interval, calls can overlap. Use nested `setTimeout` to avoid this issue:
 
@@ -224,7 +224,7 @@ setInterval(() => {
 }, 1000);
 ```
 
-### Q3: Can setTimeout delay be 0ms?
+##### Q3: Can setTimeout delay be 0ms?
 
 Yes, but it won't execute immediately. It goes into the Event Queue and executes after the current execution stack is clear:
 
@@ -237,7 +237,7 @@ console.log("World!");
 // Hello!  (Executes after the stack clears)
 ```
 
-## Key Takeaways
+#### Key Takeaways
 
 1. `setTimeout` delays execution, while `setInterval` repeats execution
 2. Always clear timers using `clearTimeout` and `clearInterval` when no longer needed
