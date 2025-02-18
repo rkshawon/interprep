@@ -1,0 +1,146 @@
+---
+title: "JavaScript: Arrays & Functions as Objects - Complete Guide"
+description: "Understanding how Arrays and Functions behave as objects in JavaScript"
+date: "2025-02-18"
+tags: ["javascript", "arrays", "functions", "objects", "programming"]
+---
+
+# JavaScript: Arrays & Functions as Objects - Complete Guide 🚀
+
+JavaScript is a **prototype-based language**, meaning almost everything in JavaScript is an **object** (except primitive values like numbers, strings, etc.). Both **Arrays** and **Functions** are special types of objects. Let's explore their behavior in detail.
+
+#### Everything in JavaScript is an Object (Almost)
+
+##### Types in JavaScript
+
+| Type         | Example            | Is Object? |
+| ------------ | ------------------ | ---------- |
+| Number       | `42`               | ❌ No      |
+| String       | `"hello"`          | ❌ No      |
+| Boolean      | `true/false`       | ❌ No      |
+| `null`       | `null`             | ❌ No      |
+| `undefined`  | `undefined`        | ❌ No      |
+| **Object**   | `{ key: "value" }` | ✅ Yes     |
+| **Array**    | `[1, 2, 3]`        | ✅ Yes     |
+| **Function** | `function() {}`    | ✅ Yes     |
+
+**✅ Arrays and Functions are just special types of objects!**
+
+#### Arrays Are Objects
+
+##### Checking Array Type
+
+```javascript
+let arr = [1, 2, 3];
+console.log(typeof arr); // "object"
+console.log(arr instanceof Array); // true
+console.log(arr instanceof Object); // true
+```
+
+✅ Arrays are objects that inherit from `Array.prototype`, which itself is an object.
+
+#### Arrays Store Data Like Objects
+
+Arrays internally store data in **key-value pairs**, just like objects.
+
+```javascript
+let arr = ["apple", "banana"];
+console.log(arr[0]); // "apple" (Indexed like an array)
+console.log(arr["0"]); // "apple" (Keys are actually strings)
+console.log(arr.length); // 2
+```
+
+✅ Array indexes are actually object keys in string format (`"0"`, `"1"`, etc.).
+
+#### Arrays Can Have Custom Properties (Like Objects)
+
+```javascript
+let arr = [1, 2, 3];
+arr.customProperty = "Hello!";
+console.log(arr.customProperty); // "Hello!"
+console.log(arr.length); // 3 (Adding properties does NOT change array length)
+```
+
+✅ Arrays can have custom properties, but they do not affect indexing or `length`.
+
+#### Arrays Inherit from `Array.prototype`
+
+```javascript
+let arr = [1, 2, 3];
+console.log(arr.toString()); // "1,2,3" (from Array.prototype)
+console.log(arr.hasOwnProperty("length")); // true (inherited from Object.prototype)
+```
+
+✅ Arrays have built-in methods like `map()`, `filter()`, etc., because they inherit from `Array.prototype`.
+
+#### Functions Are Also Objects
+
+##### Checking Function Type
+
+```javascript
+function myFunc() {}
+console.log(typeof myFunc); // "function" (Special type of object)
+console.log(myFunc instanceof Object); // true
+```
+
+✅ Functions are objects and can store properties like objects.
+
+#### Functions Can Have Properties
+
+```javascript
+function greet() {
+  console.log("Hello!");
+}
+greet.customProperty = "I am a function property";
+console.log(greet.customProperty); // "I am a function property"
+```
+
+✅ Functions can have properties just like objects!
+
+#### Functions Can Be Stored in Objects (Method)
+
+```javascript
+let obj = {
+  sayHi: function () {
+    console.log("Hi!");
+  },
+};
+obj.sayHi(); // "Hi!" (Function as object property)
+```
+
+✅ Functions stored in objects are called **methods**.
+
+#### Functions Have a `prototype` Property (Unlike Arrays)
+
+Every function in JavaScript has a hidden `prototype` property.
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.sayHello = function () {
+  console.log("Hello " + this.name);
+};
+let john = new Person("John");
+john.sayHello(); // "Hello John"
+```
+
+✅ Functions can be used as constructors and have prototypes for inheritance.
+
+#### Comparing Objects, Arrays, and Functions
+
+| Feature              | Object | Array                      | Function                      |
+| -------------------- | ------ | -------------------------- | ----------------------------- |
+| Key-Value Storage    | ✅ Yes | ✅ Yes (Indexes are keys)  | ✅ Yes (Can store properties) |
+| Iterable by Index    | ❌ No  | ✅ Yes                     | ❌ No                         |
+| `length` Property    | ❌ No  | ✅ Yes                     | ❌ No                         |
+| `prototype` Property | ❌ No  | ✅ Yes (`Array.prototype`) | ✅ Yes (`Function.prototype`) |
+| Callable             | ❌ No  | ❌ No                      | ✅ Yes (`()` syntax)          |
+
+#### Key Takeaways
+
+1. **Arrays and Functions are Objects**, but with special behaviors.
+2. **Arrays store data like objects**, but with numeric keys (converted to strings internally).
+3. **Functions can store properties and be used as objects**, but they also have executable behavior.
+4. **Functions have a `prototype`**, which allows for inheritance.
+5. **Arrays inherit from `Array.prototype`**, which gives them powerful methods.
