@@ -9,5 +9,6 @@
   "setTimeout_setInterval": "SetTimeout and SetInterval",
   "array": "Array",
   "array_and_fn_as_Object": "Array And Function As Object",
+  "polyfill": "Polyfill",
   "code": "Code"
 }
