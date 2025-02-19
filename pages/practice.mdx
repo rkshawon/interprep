@@ -1,7 +1,3 @@
----
-title: Code Practice
----
-
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
@@ -10,56 +6,52 @@ export const DynamicEditor = dynamic(() => import("./components/CodeEditor"), {
 });
 
 export function CodePractice() {
- const [code, setCode] = useState('// Write your code here\nconst a = 40;\nconst b = 50;\nconsole.log(a+b);');
+  const [code, setCode] = useState('// Write your code here');
   const [output, setOutput] = useState('');
-  
-  // Function to evaluate code safely
-  const evaluateCode = (codeToEval) => {
+
+const evaluateCode = (codeToEval) => {
+
     try {
-      // Create a custom console.log to capture output
+
       const logs = [];
       const customConsole = {
         log: (...args) => {
-          logs.push(args.map(arg => 
+          logs.push(args.map(arg =>
             typeof arg === 'object' ? JSON.stringify(arg) : arg
           ).join(' '));
         }
       };
-      
-      // Replace console.log with our custom implementation
       const transformedCode = codeToEval.replace(
-        /console\.log\(/g, 
+        /console\.log\(/g,
         'customConsole.log('
       );
-      
-      // Execute the code in an isolated scope
       new Function('customConsole', transformedCode)(customConsole);
-      
-      // Join all logged outputs
       return logs.join('\n');
     } catch (error) {
       return `Error: ${error.message}`;
     }
-  };
-  
-  const handleRunCode = () => {
-    const result = evaluateCode(code);
-    setOutput(result);
-  };
+
+};
+
+const handleRunCode = () => {
+const result = evaluateCode(code);
+setOutput(result);
+};
 
 return (
-<div>
-<DynamicEditor
-value={code}
-onChange={(value) => setCode(value)}
-/>
+
+  <div>
+    <DynamicEditor
+      value={code}
+      onChange={(value) => setCode(value)}
+      />
 
       <button
         onClick={handleRunCode}
         style={{
-          marginTop: '10px',
-          padding: '8px 16px',
-          backgroundColor: '#4CAF50',
+          marginTop: '15px',
+          padding: '6px 12px',
+          backgroundColor: '#7f199c',
           color: 'white',
           border: 'none',
           borderRadius: '4px',
@@ -69,24 +61,22 @@ onChange={(value) => setCode(value)}
         Run Code
       </button>
 
-      <div style={{ marginTop: '20px' }}>
+      {output && <div style={{ marginTop: '20px' }}>
         <h3>Output:</h3>
         <pre style={{
           backgroundColor: '#f5f5f5',
-          padding: '12px',
+          padding: '10px',
           borderRadius: '4px',
           fontFamily: 'monospace'
         }}>
           {output}
         </pre>
-      </div>
+      </div>}
     </div>
 
 );
 }
 
-# JavaScript Practice
-
-Try the code editor below:
+## JavaScript Editor
 
 <CodePractice />

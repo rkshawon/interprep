@@ -13,10 +13,4 @@ export default {
     link: "https://github.com/shuding/nextra",
   },
   logo: <span>InterPrep</span>,
-
-  // Add this to enhance MDX capabilities
-  mdxOptions: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-  },
 };
