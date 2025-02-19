@@ -1,9 +1,7 @@
-// components/Editor.tsx
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
-import dynamic from "next/dynamic";
 
 interface EditorProps {
   value: string;
@@ -19,7 +17,7 @@ const CodeEditor: React.FC<EditorProps> = ({
   return (
     <CodeMirror
       value={value}
-      height="300px"
+      height="500px"
       extensions={[javascript({ jsx: true })]}
       theme={oneDark}
       onChange={onChange}

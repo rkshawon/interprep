@@ -2,7 +2,7 @@
   "basic": "Basic",
   "function": "Functions",
   "functional_programming": "Functions Programming",
-  "this": "This Keyword",
+  "this": "Keyword this",
   "scope_hoisting": "Scope and Hoisting",
   "var_let_const": "Var, Let and Const",
   "object": "Object",
