@@ -10,5 +10,9 @@
   "react": {
     "title": "React.js",
     "type": "page"
+  },
+  "practice": {
+    "title": "Practice",
+    "type": "page"
   }
 }
