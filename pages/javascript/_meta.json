@@ -1,5 +1,7 @@
 {
   "basic": "Basic",
+  "history": "History",
+  "opp": "OPP",
   "function": "Functions",
   "functional_programming": "Functions Programming",
   "this": "Keyword this",

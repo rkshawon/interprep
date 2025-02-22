@@ -1,70 +1,219 @@
-What is program?
+# JavaScript and Programming Fundamentals
 
-- A program, often referred to as source code or just code, is a set of
-  special instructions to tell the computer what tasks to perform.
-- The rules for valid format and combinations of instructions is called
-  a computer language, sometimes referred to as its syntax
-- In a computer language, a group of words, numbers, and operators
-  that performs a specific task is a statement. a = b \* 2;
+#### Variables
 
-- By contrast, the 2 is just a value itself, called a literal value, because it
-  stands alone without being stored in a variable.
+Variables are the names we give to computer memory locations which are used to store values in a computer program.
 
-- The = and \* characters are operators. they perform actions with the values and variables such as assign‐
-  ment and mathematic multiplication.
+#### Operators
 
-- Statements are made up of one or more expressions. An expression is
-  any reference to a variable or value, or a set of variable(s) and
-  value(s) combined with operators.
-  For example:
-  a = b _ 2;
-  This statement has four expressions in it:
-  • 2 is a literal value expression.
-  • b is a variable expression, which means to retrieve its current
-  value.
-  • b _ 2 is an arithmetic expression, which means to do the multi-
-  plication.
-  • a = b _ 2 is an assignment expression, which means to assign
-  the result of the b _ 2 expression to the variable a (more on
-  assignments later).
-  A general expression that stands alone is also called an expression
-  statement, such as the following:
-  b \* 2;
+An operator in a programming language is a symbol that tells the compiler or interpreter to perform specific mathematical, relational or logical operation and produce final result.
 
-#### Summary
+#### Operands
 
-- JS runs on JS Engine/Interpreters/Runtime Environment via a browser or NodesJS
+An operand is the part of an instruction representing the data manipulated by the operator.
 
-- JS lang doesn't need to be installed like java or python, it comes with the Interpreter
+#### Objects
 
-- JS is program logic, whereas Interpreters provide features/API, which can be interacted via JS lang
+JavaScript object is a non-primitive data-type that allows you to store multiple collections of data in key value pair.
 
-- LiveScript was created by Brendan Eich within 10 days
+#### Scope
 
-- It had many loopholes to work on
+In JavaScript, scope refers to the context in which variables and functions are declared and accessed. It determines the visibility and accessibility of variables and functions throughout your code.
 
-- LiveScript was a combination of Java Syntax(to attract Java programmers) + OOP + Functional Programming
+#### Hoisting
 
-- LiveScript was renamed to JavaScript to attract Java programmers
+Hoisting in JavaScript is a behavior where variable and function declarations are moved to the top of their containing scope during the compilation phase, regardless of where they are declared in the code. This means that variables and functions can be used before they are actually declared in the code.
 
-- JavaScript had to be renamed to ECMAScript due to copyright issues
+#### Error Handling
 
-- Vanilla JS is basic JS
+Error handling is the process of managing errors.
 
-- ECMA International decideds standards for ECMAScript
+#### Asynchronous Programming
 
-- ECMA International is an European Organization
+Asynchronous programming is a programming paradigm that allows multiple tasks to be executed concurrently, without blocking the execution of the code. In JavaScript, asynchronous programming is commonly achieved through mechanisms such as:
 
-- ECMAScript had a gap of 10 years b/w each version up to 6
+- Callbacks
+- Promises
+- Async/await syntax
 
-- ECMA Script versions were released yearly starting from version 7
+Asynchronous programming is used to handle multiple concurrent tasks efficiently, such as fetching data from servers, handling user interactions, and updating the UI dynamically.
 
-- TC-39 a committee of Browser Vendors who decides JS features and adopt it onto their own JS Engines(Interpreters)
+#### Programs and Code
 
-- AngularJS/VueJS/ReactJS are JS frameworks
+A program, often referred to as source code or just code, is a set of special instructions to tell the computer what tasks to perform.
 
-- Creating and modifying UI is expensive, it takes a lot of processing load(ex:- reason why GPUs are expensive)
+##### Key Components
 
-- JS frameworks have their own version of JS called JSX
+- The rules for valid format and combinations of instructions is called a computer language, sometimes referred to as its syntax
+- In a computer language, a group of words, numbers, and operators that performs a specific task is a statement. Example: `a = b * 2;`
+- A literal value (like `2`) stands alone without being stored in a variable
+- Operators (like `=` and `*`) perform actions with values and variables such as assignment and mathematical multiplication
 
-- JS frameworks optimizes UI written in their version of JS and optimizes it and deploys(reducing the processing load)
+##### Expressions
+
+Statements are made up of one or more expressions. An expression is any reference to a variable or value, or a set of variable(s) and value(s) combined with operators.
+
+######## Example Statement Analysis
+
+```javascript
+a = b * 2;
+```
+
+This statement contains four expressions:
+
+1. `2` - a literal value expression
+2. `b` - a variable expression (retrieves current value)
+3. `b * 2` - an arithmetic expression (performs multiplication)
+4. `a = b * 2` - an assignment expression (assigns result to variable a)
+
+A general expression that stands alone is also called an expression statement, such as:
+
+```javascript
+b * 2;
+```
+
+#### JavaScript Overview
+
+JavaScript is a high-level, dynamically-typed programming language primarily used for web development. Key characteristics include:
+
+- Synchronous and single-threaded in nature
+- Object-based: everything in JavaScript is an object
+- Template-based rather than class-based
+- Flexible: can be used for web development, server-side scripting (Node.js), desktop applications, and IoT programming
+- Makes web pages interactive and user-friendly
+
+##### Interesting JavaScript Fact
+
+```javascript
+var a = (b = 3);
+// is equivalent to:
+b = 3;
+var a = b;
+```
+
+#### Compilation vs Interpretation
+
+##### Compiler
+
+- Translates entire code from high-level language to machine code before execution
+- Takes more time for analysis
+- Code runs faster after compilation
+- Displays all errors after compilation
+- Won't compile if code has errors
+
+##### Interpreter
+
+- Translates code line-by-line during execution
+- Takes less time for analysis
+- Code runs slower compared to compiled code
+- Displays errors one by one
+- Can contain compilers for optimization
+
+##### Just-in-Time (JIT) Compilation
+
+Modern JavaScript engines use JIT compilation for better performance. The process involves:
+
+1. **Interpretation**: Initial line-by-line code execution
+2. **Profiling**: Monitoring execution and identifying frequently used code (hot paths)
+3. **Optimization**: Generating optimized machine code for hot paths
+4. **Compilation**: Creating machine code for identified hot paths
+5. **Caching**: Storing generated machine code for reuse
+6. **Execution**: Direct execution of optimized machine code
+
+##### Dynamic Compilation
+
+JIT compiler translates programs into machine code on-the-fly, just before execution, instead of compiling the entire program ahead of time.
+
+#### Logical Operators
+
+##### OR (||) Operator
+
+- If both operands are true: returns first value
+- If both operands are false: returns last value
+- If one is false: returns the true value
+
+##### AND (&&) Operator
+
+- If both operands are true: returns last value
+- If both operands are false: returns first value
+- If one is false: returns the false value
+
+##### Nullish Coalescing Operator (??)
+
+- Similar to || but treats falsy values differently
+- Only considers `null` and `undefined` as false
+- Other falsy values (0, "") are considered true
+
+#### String Padding
+
+```javascript
+const originalString = "42";
+const paddedString = originalString.padEnd(5, "*");
+console.log(paddedString); // Outputs: '42***'
+```
+
+#### Issues with Dynamically Typed Languages
+
+1. **Type Errors at Runtime**: Type checking occurs during execution
+2. **Reduced Performance**: Dynamic type determination affects speed
+3. **Readability Issues**: Code can be less maintainable
+4. **Complex Debugging**: Type-related issues surface during runtime
+
+#### Package Management
+
+##### NPM (Node Package Manager)
+
+- Tool for automating package management
+- Handles finding, downloading, installing, configuring, upgrading, and removing packages
+- Works with package registry (database for packages)
+
+#### Modules
+
+A module is a file containing code for a specific task, including variables, functions, and classes.
+
+#### Scripting Languages
+
+- Interpreted and executed at runtime
+- Used for task automation and software control
+- Enables interaction between software components
+
+#### Libraries vs Frameworks
+
+##### Libraries
+
+**Pros:**
+
+- Flexible usage
+- Lightweight
+- Specialized functionality
+- Lower learning curve
+- No structure constraints
+
+**Cons:**
+
+- Limited guidance
+- More integration work
+- Potential compatibility issues
+
+##### Frameworks
+
+**Pros:**
+
+- Consistent structure
+- Rapid development
+- Handles program flow
+- Strong community support
+- Built-in testing tools
+
+**Cons:**
+
+- Steep learning curve
+- Less flexibility
+- Additional overhead
+- Can be complex for small projects
+
+##### Key Differences
+
+- Libraries target specific functionality; frameworks provide complete application infrastructure
+- Libraries offer control; frameworks enforce structure
+- Libraries are better for small applications; frameworks for large applications
