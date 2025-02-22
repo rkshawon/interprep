@@ -1,0 +1,130 @@
+# JavaScript Object-Oriented Programming Concepts
+
+## Classes
+
+Classes in JavaScript are special types of functions with the following characteristics:
+
+- Execute in strict mode
+- Must be declared before invocation (not hoisted)
+- Can be defined similar to function declarations and expressions
+
+## The 'this' Keyword
+
+The 'this' keyword is automatically defined within every function's scope and refers to the current execution context. Its value is determined dynamically at runtime based on how the function is called.
+
+### Example 1: Constructor Function with Arrow Function
+
+```javascript
+function Pet(name) {
+  this.getName = () => {
+    this.name = name;
+    console.log(this.name);
+  };
+}
+const cat = new Pet("Fluffy");
+
+const { getName } = cat;
+getName(); // Output: Fluffy
+```
+
+### Example 2: Arrow Function in Object
+
+```javascript
+const person = {
+  name: "Jack",
+  age: 25,
+  innerFunc: () => {
+    console.log(this); // Output: {}
+    console.log(this.age); // Output: undefined
+  },
+};
+person.innerFunc();
+```
+
+### Important Note on 'this' Behavior
+
+- In constructor functions, 'this' behaves consistently between arrow functions and normal functions when invoked with 'new'
+- Outside constructor functions:
+  - Arrow functions: 'this' is lexically scoped and maintains its value
+  - Normal functions: 'this' value depends on the caller or invocation context
+
+## The 'new' Keyword
+
+The 'new' keyword creates an instance of an object from a constructor function. When used, it performs three main operations:
+
+1. Creates an empty object
+2. Sets the object's internal Prototype property (**proto**) to match the constructor function's prototype
+3. Binds 'this' in the constructor to the new object
+4. Returns the new object
+
+### Return Value Behavior
+
+The 'new' keyword handles return values differently based on the type:
+
+- Non-primitive returns (Object, Array): Constructor returns that value
+- No return statement: Returns 'this'
+- Primitive return value: Ignored, returns 'this'
+
+```javascript
+const john = new Person();
+// Equivalent to:
+john = {}        // 1. Create empty object
+new -> john      // 2. Set prototype and bind this
+// 3. Return john object
+```
+
+## Prototypes
+
+Prototypes enable object inheritance in JavaScript, creating inheritance chains for sharing properties and methods between objects.
+
+### Key Concepts
+
+- Every function has a prototype property
+- Objects inherit from constructor's prototype via the prototype chain
+- Object.prototype is at the top of the chain
+- All objects inherit from Object.prototype directly or indirectly
+
+### Accessing Prototypes
+
+```javascript
+console.log(Student.prototype); // object
+console.log(studObj.prototype); // undefined
+console.log(studObj.__proto__); // object
+```
+
+### Important Notes
+
+- **proto** exists on all JavaScript objects
+- Function's prototype property accessible via `<function-name>.prototype`
+- Objects don't expose prototype property directly
+- Use **proto** for debugging, avoid direct modification
+- Use constructor function/class prototypes for inheritance structure
+
+## Constructor Functions
+
+Constructor functions are special functions that:
+
+- Create multiple objects
+- Enable object instantiation
+- Implement inheritance
+- Can be normal functions or function expressions
+
+## Call, Apply, and Bind
+
+These methods behave differently in strict vs non-strict mode:
+
+### Strict Mode
+
+- Enabled with 'use strict'
+- null/undefined passed as first argument are used as-is
+- Improves code resiliency and debugging
+
+### Non-Strict Mode
+
+- Default behavior
+- null/undefined as first argument are replaced with global object
+- Less predictable behavior
+
+### Usage Note
+
+ECMAScript 5+ allows scripts to opt into strict mode for improved semantics and easier problem identification.
