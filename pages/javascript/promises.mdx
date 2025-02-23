@@ -1,12 +1,18 @@
 ## JavaScript Promises - Complete Guide for Interviews
 
-A Promise in JavaScript is an object that represents the eventual completion (or failure) of an asynchronous operation. It allows you to handle asynchronous tasks like fetching data, reading files, or making API calls without using callbacks (which can lead to "callback hell").
+A Promise is an object in JavaScript which is used to handle asynchronous operations.
+It allows you to handle asynchronous tasks like fetching data, reading files, or making API calls.
 
 #### Key Features of Promises
 
 - **Pending** → Initial state, operation not completed yet
 - **Fulfilled (Resolved)** → Operation completed successfully
 - **Rejected** → Operation failed
+
+##### Key Characteristics:
+
+- It has three states: Pending, Fulfilled, Rejected
+- It helps avoid "callback hell" by enabling `.then()`, `.catch()`, and `.finally()` chaining
 
 #### 1. Creating a Promise
 
@@ -214,17 +220,6 @@ Fetching data...
 Data Loaded ✅ (after 2 seconds)
 ```
 
-# JavaScript Promises - Interview Q&A Guide
-
-#### 1. What is a Promise in JavaScript?
-
-A Promise in JavaScript is an object that represents the eventual completion (or failure) of an asynchronous operation. It helps handle asynchronous operations in a more readable and structured way than traditional callbacks.
-
-##### Key Characteristics:
-
-- It has three states: Pending, Fulfilled, Rejected
-- It helps avoid "callback hell" by enabling `.then()`, `.catch()`, and `.finally()` chaining
-
 #### 2. What are the different states of a Promise?
 
 | State                | Description                                            |
@@ -265,13 +260,6 @@ myPromise
   .catch((error) => console.error(error)) // If rejected
   .finally(() => console.log("Done!")); // Always runs
 ```
-
-#### 4. What is the difference between Promise.all() and Promise.allSettled()?
-
-| Method                 | Behavior                                                                                            |
-| ---------------------- | --------------------------------------------------------------------------------------------------- |
-| `Promise.all()`        | Waits for all promises to resolve. If any fails, it rejects immediately                             |
-| `Promise.allSettled()` | Waits for all promises to settle (either resolved or rejected), returning an array with each result |
 
 ##### Example: Promise.all() (Fails if any promise rejects)
 
@@ -330,13 +318,6 @@ async function fetchData() {
 }
 fetchData();
 ```
-
-#### 6. What is the difference between Promise.race() and Promise.any()?
-
-| Method           | Behavior                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| `Promise.race()` | Returns the first promise to settle (either resolved or rejected)                    |
-| `Promise.any()`  | Returns the first successfully resolved promise (ignores rejections unless all fail) |
 
 ##### Example: Promise.race()
 
