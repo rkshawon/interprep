@@ -2,6 +2,7 @@
   "basic": "Basic",
   "history": "History",
   "opp": "OPP",
+  "use_strict": "Use Strict",
   "function": "Functions",
   "functional_programming": "Functions Programming",
   "this": "Keyword this",
