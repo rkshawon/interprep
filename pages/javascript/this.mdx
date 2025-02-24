@@ -15,13 +15,183 @@ Outside any function, `this` refers to the global object:
 ```javascript
 console.log(this);
 // Browser: Window { ... }
-// Node.js: {} (strict mode) or global (non-strict mode)
+// Node.js: {} (strict mode) or global (non-strict mode) before node v12
+// From node v12 use globalThis or global only.
 ```
+
+### Understanding `this` in Node.js Modules
+
+#### Module Scope and `this` Binding
+
+In Node.js, all modules are automatically wrapped in a function called the "module wrapper". This wrapper looks like this:
+
+```javascript
+(function (exports, require, module, __filename, __dirname) {
+  // Your module code goes here
+});
+```
+
+This means that every piece of code you write at the top level of a module is actually running inside this wrapper function.
+
+#### How `this` Works in Modern Node.js
+
+In modern Node.js (version 12 and later), `this` at the top level of a module always refers to `exports`, which is an alias for `module.exports`. By default, this is an empty object:
+
+```javascript
+console.log(this === module.exports); // true
+console.log(this === exports); // true
+console.log(this); // {}
+```
+
+You can modify `this` or `module.exports` directly:
+
+```javascript
+// These are equivalent
+this.hello = "world";
+module.exports.hello = "world";
+```
+
+#### Historical Context: Pre-Node.js 12
+
+Before Node.js 12, the behavior of `this` was different depending on whether you were running in strict mode or not:
+
+```javascript
+// In non-strict mode (pre-Node.js 12)
+console.log(this === global); // true
+
+// In strict mode (pre-Node.js 12)
+("use strict");
+console.log(this === undefined); // true
+```
+
+This inconsistency was one of the reasons Node.js moved to treating all modules as strict by default and standardizing `this` to always reference `module.exports`.
+
+#### Best Practices
+
+Even though you can use `this` to export values from your module, it's generally recommended to use `module.exports` directly for clarity:
+
+```javascript
+// Preferred approach
+module.exports = {
+  someFunction: () => {},
+  someValue: 42,
+};
+
+// Less clear, but equivalent
+this.someFunction = () => {};
+this.someValue = 42;
+```
+
+#### Important Notes
+
+1. The module wrapper ensures that all variables declared at the top level are scoped to the module rather than becoming global.
+
+2. The wrapper provides useful variables like `__filename` and `__dirname` that wouldn't otherwise be available.
+
+3. The wrapper helps maintain proper encapsulation by keeping module-level variables private unless explicitly exported.
+
+#### Example: Complete Module Pattern
+
+Here's a complete example showing how `this` works in a modern Node.js module:
+
+```javascript
+// myModule.js
+console.log(this === module.exports); // true
+
+// Add some exports
+this.name = "MyModule";
+module.exports.version = "1.0.0";
+
+// Traditional export pattern still works
+module.exports = {
+  name: "MyModule",
+  version: "1.0.0",
+  // After this assignment, 'this' will still equal the new module.exports object
+};
+```
+
+#### Summary
+
+- In modern Node.js, `this` at the module level always equals `module.exports`
+- The module wrapper ensures consistent behavior across all modules
+- Historical differences between strict and non-strict mode are no longer relevant
+- Best practice is to use `module.exports` directly rather than relying on `this`
 
 **Environment specific behavior:**
 
 - Browser: References the `window` object
 - Node.js: References the `global` object or empty object in strict mode
+
+### Understanding JavaScript Global Objects
+
+#### Global Objects Across Environments
+
+JavaScript's global object implementation varies across different runtime environments. Understanding these differences is crucial for writing cross-platform code.
+
+#### Node.js Environment
+
+In Node.js, there are two main ways to access the global object:
+
+- `global`: The traditional Node.js global object
+- `globalThis`: The standardized way introduced in ES2020
+
+These objects are identical in Node.js:
+
+```javascript
+console.log(global === globalThis); // true
+```
+
+The `global` object holds all global variables and functions, including:
+
+- `setTimeout`
+- `console`
+- Other global utilities and APIs
+
+#### Browser Environment
+
+Browsers handle global objects differently:
+
+- `globalThis`: Points to the window object
+- `window`: The traditional browser global object
+- No `global` keyword is available
+
+In browsers, these objects reference the same thing:
+
+```javascript
+console.log(globalThis === window); // true
+```
+
+#### The Introduction of `globalThis`
+
+##### Historical Context
+
+Before ES2020, accessing the global object consistently across platforms was challenging because different environments used different global object references:
+
+| Environment | Global Object Reference |
+| ----------- | ----------------------- |
+| Node.js     | `global`                |
+| Browsers    | `window`                |
+| Web Workers | `self`                  |
+
+##### Why `globalThis` Was Needed
+
+`globalThis` was introduced in ES2020 to solve the cross-platform inconsistency problem. It provides a standardized way to access the global object regardless of the execution environment.
+
+##### Benefits of `globalThis`
+
+- **Consistency**: Same syntax works across all platforms
+- **Predictability**: Eliminates environment-specific code branches
+- **Future-proof**: Works in new JavaScript environments
+
+#### Best Practices
+
+When writing cross-platform JavaScript code:
+
+1. Use `globalThis` instead of platform-specific globals
+2. Avoid relying on environment-specific global objects when possible
+3. Consider polyfills for older environments that don't support `globalThis`
+
+export default ({ children }) => <article>{children}</article>;
 
 #### Regular Functions
 
@@ -264,3 +434,126 @@ person.sayHello(); // Output: Hello, Alice
 | Event Listener   | Event target                     |
 | Timer Functions  | `window`/`global`                |
 | Explicit Binding | Specified object                 |
+
+## Complete Guide to `this` Behavior in JavaScript
+
+This reference table shows how `this` behaves in different contexts across Node.js and browser environments.
+
+#### Node.js vs Browser Environment Table
+
+| Context                                | Non-Strict Mode     | Strict Mode         | Environment & Version |
+| -------------------------------------- | ------------------- | ------------------- | --------------------- |
+| **Global Scope (Top Level)**           |
+| Browser                                | `window`            | `window`            | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | `global`            | `undefined`         | Node < 12             |
+| Node.js (12+)                          | `module.exports {}` | `module.exports {}` | Node ≥ 12             |
+| **Inside Regular Function**            |
+| Browser                                | `window`            | `undefined`         | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | `global`            | `undefined`         | Node < 12             |
+| Node.js (12+)                          | `global`            | `undefined`         | Node ≥ 12             |
+| **Inside Method**                      |
+| Browser                                | Object Instance     | Object Instance     | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | Object Instance     | Object Instance     | Node < 12             |
+| Node.js (12+)                          | Object Instance     | Object Instance     | Node ≥ 12             |
+| **Inside Nested Function (in Method)** |
+| Browser                                | `window`            | `undefined`         | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | `global`            | `undefined`         | Node < 12             |
+| Node.js (12+)                          | `global`            | `undefined`         | Node ≥ 12             |
+| **Inside Arrow Function**              |
+| Browser                                | Lexical `this`      | Lexical `this`      | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | Lexical `this`      | Lexical `this`      | Node < 12             |
+| Node.js (12+)                          | Lexical `this`      | Lexical `this`      | Node ≥ 12             |
+| **Inside Class Constructor**           |
+| Browser                                | Instance            | Instance            | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | Instance            | Instance            | Node < 12             |
+| Node.js (12+)                          | Instance            | Instance            | Node ≥ 12             |
+| **Inside Class Method**                |
+| Browser                                | Instance            | Instance            | Chrome/Firefox/Safari |
+| Node.js (pre-12)                       | Instance            | Instance            | Node < 12             |
+| Node.js (12+)                          | Instance            | Instance            | Node ≥ 12             |
+
+#### Code Examples
+
+```javascript
+// Global Scope
+// Browser (both modes)
+console.log(this === window); // true
+
+// Node.js pre-12 (non-strict)
+console.log(this === global); // true
+
+// Node.js pre-12 (strict)
+("use strict");
+console.log(this === undefined); // true
+
+// Node.js 12+ (both modes)
+console.log(this === module.exports); // true
+
+// Regular Function
+function regularFunction() {
+  console.log(this);
+}
+// Non-strict: window/global
+// Strict: undefined
+
+// Method
+const obj = {
+  method() {
+    console.log(this); // obj in all environments/modes
+
+    function nestedFunction() {
+      console.log(this);
+      // Non-strict: window/global
+      // Strict: undefined
+    }
+
+    const arrowFunction = () => {
+      console.log(this); // obj in all environments/modes
+    };
+  },
+};
+
+// Class
+class Example {
+  constructor() {
+    console.log(this); // Instance in all environments/modes
+  }
+
+  method() {
+    console.log(this); // Instance in all environments/modes
+  }
+}
+```
+
+#### Key Points to Remember
+
+1. **Arrow Functions**
+
+   - Always inherit `this` from their enclosing scope
+   - Not affected by strict mode
+   - Cannot be bound to a different `this` using `.bind()`, `.call()`, or `.apply()`
+
+2. **Class Methods**
+
+   - Always run in strict mode
+   - `this` consistently refers to the instance
+   - Class fields with arrow functions retain lexical `this`
+
+3. **Node.js Module Scope**
+
+   - Modern Node.js (12+) always has `this === module.exports`
+   - This behavior is consistent regardless of strict mode
+
+4. **Browser Global Scope**
+
+   - `this` in the global scope always refers to `window`
+   - In modules, top-level `this` is `undefined`
+
+5. **Method Invocation**
+
+   - `this` refers to the object that owns the method
+   - This behavior is consistent across all environments and modes
+
+6. **Constructor Functions**
+   - When called with `new`, `this` refers to the newly created instance
+   - This behavior is consistent across all environments and modes
