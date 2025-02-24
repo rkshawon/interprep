@@ -1,0 +1,167 @@
+## JavaScript Strict Mode: A Comprehensive Guide
+
+#### Introduction
+
+Introduced in **ECMAScript 5 (ES5)**, strict mode adds a layer of rules to catch silent errors, making JavaScript behave more predictably.
+
+##### Enabling Strict Mode
+
+To enable strict mode, add the `"use strict";` directive at the top of a file or a function:
+
+```javascript
+"use strict";
+x = 5; // ❌ ReferenceError: x is not defined
+```
+
+#### Key Differences in Strict Mode
+
+##### 1. Global `this` Binding
+
+In strict mode, the behavior of `this` changes significantly:
+
+- **Browser**: `this` is `undefined` inside a function if called without an object context
+- **Node.js modules**: `this` is always an empty object (`{}`) due to the module wrapper function
+
+```javascript
+"use strict";
+console.log(this); // Node.js -> {}, browser -> Window or globalThis
+
+function showThis() {
+  console.log(this); // undefined in both Node.js and browser
+}
+showThis();
+```
+
+##### 2. No Accidental Globals
+
+Variables must be declared explicitly:
+
+```javascript
+"use strict";
+a = 10; // ❌ ReferenceError: a is not defined
+```
+
+##### 3. Read-only Properties Protection
+
+Attempting to write to read-only properties throws an error:
+
+```javascript
+"use strict";
+const obj = {};
+Object.defineProperty(obj, "prop", {
+  value: 42,
+  writable: false,
+});
+obj.prop = 100; // ❌ TypeError: Cannot assign to read-only property 'prop'
+```
+
+##### 4. Parameter Naming Rules
+
+Duplicate parameter names are not allowed:
+
+```javascript
+"use strict";
+function sum(a, a, b) {
+  // ❌ SyntaxError: Duplicate parameter name not allowed
+  return a + b;
+}
+```
+
+##### 5. Property Deletion Rules
+
+Deleting undeletable properties is prohibited:
+
+```javascript
+"use strict";
+delete Object.prototype; // ❌ TypeError: Cannot delete property 'prototype'
+```
+
+##### 6. Enhanced `eval` Safety
+
+Variables inside `eval()` don't leak into surrounding scopes:
+
+```javascript
+"use strict";
+eval("var a = 5;");
+console.log(a); // ❌ ReferenceError: a is not defined
+```
+
+##### 7. Octal Literal Restrictions
+
+Octal literals are not allowed:
+
+```javascript
+"use strict";
+var num = 010; // ❌ SyntaxError: Octal literals are not allowed
+```
+
+##### 8. Arguments Object Behavior
+
+The `arguments` object doesn't sync with function parameters:
+
+```javascript
+"use strict";
+function demo(a) {
+  a = 42;
+  console.log(arguments[0]); // still shows the original value, not 42
+}
+demo(10); // logs 10
+```
+
+#### Non-Strict Mode (Sloppy Mode)
+
+By default, JavaScript runs in non-strict mode unless `"use strict";` is used.
+
+##### Key Differences in Non-Strict Mode
+
+######## 1. Global `this` Behavior
+
+```javascript
+console.log(this); // Node.js -> {}, browser -> Window
+```
+
+######## 2. Implicit Globals
+
+```javascript
+x = 10; // ✅ works without error (creates a global variable)
+console.log(x); // 10
+```
+
+######## 3. Parameter Handling
+
+```javascript
+function sum(a, a, b) {
+  return a + b; // ✅ works, but can cause confusion
+}
+```
+
+######## 4. Default `this` Binding
+
+```javascript
+function showThis() {
+  console.log(this); // Node.js -> {}, browser -> Window
+}
+showThis();
+```
+
+######## 5. `eval` Scope
+
+```javascript
+eval("var a = 5;");
+console.log(a); // ✅ works, logs 5
+```
+
+#### Feature Comparison Table
+
+| Feature                              | Strict Mode                      | Non-Strict Mode                   |
+| ------------------------------------ | -------------------------------- | --------------------------------- |
+| Global `this` binding                | `undefined` (or `{}` in Node.js) | `globalThis` (or `{}` in Node.js) |
+| Implicit globals                     | ❌ Error                         | ✅ Allowed                        |
+| Duplicate parameters                 | ❌ Error                         | ✅ Allowed                        |
+| Octal literals                       | ❌ Error                         | ✅ Allowed                        |
+| Property deletion (non-configurable) | ❌ Error                         | ✅ Silently fails                 |
+| `eval` variable leaks                | ❌ Contained                     | ✅ Leaks to outer scope           |
+
+export default ({ children }) => <article>{children}</article
+
+>
