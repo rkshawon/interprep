@@ -14,5 +14,6 @@
   "array_and_fn_as_Object": "Array And Function As Object",
   "polyfill": "Polyfill",
   "promises": "Promises",
+  "call_appy_bind": "Call, Apply and Bind",
   "code": "Code"
 }
