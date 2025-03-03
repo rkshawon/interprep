@@ -1,0 +1,198 @@
+---
+title: "Understanding the V8 JavaScript Engine"
+description: "A comprehensive overview of Google's V8 JavaScript engine, its components, execution flow, and optimization techniques."
+tags: ["javascript", "v8", "performance", "web development", "node.js"]
+---
+
+## Understanding the V8 JavaScript Engine
+
+#### 🔥 What is the V8 engine?
+
+V8 is an open-source JavaScript engine developed by Google, written in C++. It compiles JavaScript directly to machine code (not bytecode or intermediate representation like some other engines).
+
+**Used in:**
+
+- Google Chrome (browser)
+- Node.js (server-side JS)
+- Deno (a modern runtime for JS/TS)
+
+#### 🏎️ Key Components of V8
+
+##### Heap
+
+- Stores objects, closures, and functions
+- Garbage collection happens here
+- Organized into:
+  - New Space (short-lived objects, e.g., temporary variables)
+  - Old Space (long-lived objects)
+  - Large Object Space (large arrays, buffers, etc.)
+  - Code Space (optimized machine code)
+  - Map Space (hidden classes and metadata)
+
+##### Stack
+
+- Stores primitive values (numbers, booleans, etc.) and function calls (execution contexts)
+- Works in LIFO (Last In, First Out) order
+
+##### Ignition (Interpreter)
+
+- Converts JavaScript code into bytecode
+- Ignition starts execution quickly by interpreting the code rather than compiling it first
+
+##### TurboFan (Compiler)
+
+- Optimizes bytecode into highly efficient machine code
+- Uses JIT (Just-In-Time) compilation — meaning it compiles during runtime
+
+##### Garbage Collector
+
+- Uses generational garbage collection — splitting objects into new and old generations
+- Runs in two phases:
+  - Mark phase: Marks objects still in use
+  - Sweep phase: Frees up memory from unmarked objects
+
+#### ⚙️ The Execution Flow
+
+Here's the step-by-step process when you run JavaScript:
+
+##### Step 1: Parsing
+
+- V8 parses the JS code using a parser
+- Generates an AST (Abstract Syntax Tree)
+
+Example AST for:
+
+```javascript
+const add = (a, b) => a + b;
+```
+
+AST:
+
+```
+Program
+  ├── VariableDeclaration (const add)
+  └── ArrowFunctionExpression (a, b)
+      └── BinaryExpression (+)
+```
+
+##### Step 2: Compilation
+
+- The AST is fed into Ignition (V8's interpreter)
+- Ignition converts AST to bytecode (an intermediate, platform-agnostic format)
+
+Example bytecode:
+
+```
+LdaNamedProperty a
+LdaNamedProperty b
+Add
+Return
+```
+
+##### Step 3: Optimization
+
+- TurboFan kicks in, compiling bytecode into optimized machine code
+- Uses profiling data to identify hot functions — those executed often
+- Runs JIT compilation to optimize these "hot paths"
+
+##### Step 4: Garbage Collection
+
+- V8 uses a Generational Garbage Collector:
+  - Young Generation (New Space): Small, short-lived objects (like function calls)
+  - Old Generation (Old Space): Long-lived objects moved here after surviving GC cycles
+- Incremental and concurrent GC: Ensures garbage collection happens without blocking execution
+
+#### 🔥 Optimization Techniques Used by V8
+
+##### Inline Caching
+
+- V8 caches the type of variables or functions to skip rechecking types
+
+Example:
+
+```javascript
+function add(x, y) {
+  return x + y;
+}
+
+add(1, 2); // caches that x and y are numbers
+add(3, 4); // uses the cached type info
+```
+
+##### Hidden Classes
+
+- Instead of traditional dynamic objects, V8 uses hidden classes for faster property lookups
+
+Example:
+
+```javascript
+function Animal(name) {
+  this.name = name;
+}
+```
+
+V8 creates a hidden class like:
+
+```
+Class: Animal
+Properties: { name: 'string' }
+```
+
+##### Deoptimization (Bailouts)
+
+- If V8 notices a type inconsistency during runtime, it will deoptimize the code back to the slower, interpreted path
+
+##### Just-In-Time Compilation (JIT)
+
+- Combines interpreting and compiling — runs code immediately and optimizes "hot" code paths dynamically
+
+#### 📦 V8-Specific Features
+
+##### WebAssembly (Wasm)
+
+- V8 supports WebAssembly — low-level, binary format for high-performance web apps (games, emulators, etc.)
+
+##### API Exposure (Node.js)
+
+- In Node.js, V8 exposes:
+
+```javascript
+console.log(globalThis); // refers to the global object
+```
+
+##### Garbage Collection Hooks
+
+- You can track GC cycles using `--trace-gc` or `v8.getHeapStatistics()`
+
+#### 🚀 Bonus: Deep Dives
+
+##### V8 Flags for Optimization
+
+- You can run JS with custom V8 options:
+
+```bash
+node --trace-opt example.js
+```
+
+##### Understanding Deoptimization
+
+- Check why code deoptimizes:
+
+```bash
+node --trace-deopt example.js
+```
+
+##### Heap Snapshot (Memory leaks)
+
+- Use DevTools to capture heap snapshots and track memory usage
+
+#### 🎯 Summary
+
+| Component         | Purpose                      | Key Features                     |
+| ----------------- | ---------------------------- | -------------------------------- |
+| Ignition          | Bytecode interpreter         | Fast startup, lower optimization |
+| TurboFan          | Optimizing compiler          | JIT compilation, hot path focus  |
+| Heap              | Stores objects and functions | Generational GC, fast allocation |
+| Garbage Collector | Frees unused memory          | Mark-and-sweep, incremental GC   |
+| Inline Caching    | Caches property access info  | Faster property lookups          |
+| Hidden Classes    | Mimics static typing         | Optimizes dynamic object access  |

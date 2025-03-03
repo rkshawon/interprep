@@ -15,5 +15,6 @@
   "polyfill": "Polyfill",
   "promises": "Promises",
   "call_appy_bind": "Call, Apply and Bind",
+  "v8": "V8",
   "code": "Code"
 }
