@@ -1,0 +1,227 @@
+## Understanding JavaScript Execution Context
+
+#### What is an Execution Context (EC)?
+
+In JavaScript, Execution Context is an environment where your code is evaluated and executed.
+
+There are three types of execution contexts:
+
+- **Global Execution Context (GEC)**: Created when a JS file is first run.
+- **Function Execution Context (FEC)**: Created whenever a function is invoked.
+- **Eval Execution Context**: Created inside eval() (rarely used).
+
+#### 🚀 Execution Context Lifecycle
+
+The lifecycle of an execution context has two phases:
+
+##### 1️⃣ Creation Phase (Memory Creation/Hoisting)
+
+Happens before any code execution.
+JS sets up memory space for variables and functions.
+Hoisting takes place here (moving declarations to the top).
+
+What happens step-by-step:
+
+###### Create a Global Object:
+
+- In browsers: `window`
+- In Node.js: `global`
+
+###### Create `this`:
+
+- In the global context: `this` points to `window` (browser) or `global` (Node.js).
+- Inside a function: `this` depends on how the function is called (can be dynamic).
+
+###### Memory allocation for variables and functions:
+
+- Functions: Entire function body is stored (hoisted fully).
+- `var`: Gets hoisted, but initialized with `undefined`.
+- `let/const`: Gets hoisted but placed in the Temporal Dead Zone (TDZ) — meaning they can't be accessed until the code execution phase.
+
+Example:
+
+```javascript
+console.log(a); // undefined
+console.log(b); // ReferenceError: Cannot access 'b' before initialization
+console.log(add()); // "Hello"
+
+var a = 10;
+let b = 20;
+const c = 30;
+
+function add() {
+  return "Hello";
+}
+```
+
+What happens in memory:
+
+| Identifier | Value in Creation Phase |
+| ---------- | ----------------------- |
+| a          | undefined               |
+| b          | TDZ                     |
+| c          | TDZ                     |
+| add        | function add() {}       |
+
+##### 2 Execution Phase (Code Execution)
+
+Now, the code actually runs line by line:
+
+- Variables declared with `var` are updated to their assigned values.
+- `let` and `const` exit the TDZ once they are initialized.
+- Functions can be called — since they were hoisted in the creation phase.
+
+Execution example:
+
+```javascript
+console.log(a); // undefined
+console.log(b); // Error (still in TDZ)
+console.log(add()); // "Hello"
+
+var a = 10;
+let b = 20;
+const c = 30;
+
+function add() {
+  return "Hello";
+}
+```
+
+Execution phase:
+
+| Identifier | Final Value |
+| ---------- | ----------- |
+| a          | 10          |
+| b          | 20          |
+| c          | 30          |
+| add        | function    |
+
+#### 🎯 How are variables stored?
+
+##### 1. `var`:
+
+- Hoisted to the top, but initialized as `undefined`.
+- Stored in the Global Object (`window` in browsers).
+- Can be redeclared and updated.
+
+Example:
+
+```javascript
+console.log(x); // undefined
+var x = 5;
+console.log(x); // 5
+```
+
+##### 2. `let`:
+
+- Hoisted but placed in the Temporal Dead Zone (TDZ) until initialized.
+- Stored in a separate block scope (not attached to `window`).
+- Can be updated but not redeclared.
+
+Example:
+
+```javascript
+console.log(y); // ReferenceError
+let y = 10;
+console.log(y); // 10
+```
+
+##### 3. `const`:
+
+- Hoisted but in TDZ like `let`.
+- Must be initialized at declaration (no default value like `undefined`).
+- Immutable binding — can't be reassigned.
+
+Example:
+
+```javascript
+const z; // SyntaxError: Missing initializer
+const z = 100;
+console.log(z); // 100
+```
+
+##### 4. Function Declarations:
+
+- Hoisted fully — function definitions are available before execution starts.
+- Stored in the Global Object or Function Object.
+
+Example:
+
+```javascript
+console.log(foo()); // "I'm a function"
+
+function foo() {
+  return "I'm a function";
+}
+```
+
+##### 5. Function Expressions (with var, let, const):
+
+###### Var + function expression:
+
+- Hoisted, but initialized as `undefined`.
+
+```javascript
+console.log(bar()); // TypeError: bar is not a function
+var bar = function () {
+  return "I'm an expression";
+};
+```
+
+###### Let/Const + function expression:
+
+- Hoisted, but in TDZ.
+
+```javascript
+console.log(bar()); // ReferenceError
+let bar = function () {
+  return "I'm an expression";
+};
+```
+
+#### 📦 Recap — Quick Cheatsheet:
+
+| Keyword  | Hoisted? | Initialized?   | Scope           | Redeclaration? | Mutable? |
+| -------- | -------- | -------------- | --------------- | -------------- | -------- |
+| var      | Yes      | undefined      | Function/Global | Yes            | Yes      |
+| let      | Yes      | TDZ            | Block           | No             | Yes      |
+| const    | Yes      | TDZ            | Block           | No             | No       |
+| Function | Yes      | Defined (full) | Function/Global | N/A            | Yes      |
+
+#### 🔥 Bonus: Nested Execution Contexts
+
+Each time a function is called:
+
+1. A new Execution Context is created.
+2. It has its own creation and execution phases.
+3. The old Execution Context is pushed to the Execution Stack.
+4. Once the function is done, its context is popped off the stack.
+
+Example:
+
+```javascript
+function outer() {
+  console.log("Outer function");
+  inner();
+}
+
+function inner() {
+  console.log("Inner function");
+}
+
+outer();
+```
+
+Execution Stack:
+
+```
+1. Global Execution Context
+2. outer() Execution Context
+3. inner() Execution Context (popped off when done)
+```
+
+export default ({ children }) => (
+  <div className="js-execution-context-guide">{children}</div>
+);
+
+;
