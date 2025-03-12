@@ -1,0 +1,190 @@
+## JavaScript Data Types
+
+#### What is a Data Type?
+
+In JavaScript, a data type specifies the type of data that a variable can hold. JavaScript is a dynamically typed language, meaning you don't have to explicitly define the type of a variable — it is determined at runtime.
+
+#### Types of Data Types
+
+JavaScript has two categories of data types:
+
+##### Primitive Data Types
+
+- **Number**: Represents both integer and floating-point numbers.
+- **BigInt**: For integers larger than 2^53 - 1.
+- **String**: Represents sequences of characters.
+- **Boolean**: Logical data type that can only be true or false.
+- **Undefined**: A variable that has been declared but not assigned a value.
+- **Null**: Represents an intentional absence of value.
+- **Symbol**: Introduced in ES6, used to create unique identifiers.
+
+##### Non-Primitive (Reference) Data Types
+
+- **Object**: A collection of key-value pairs.
+- **Array**: A special kind of object used for storing ordered collections.
+- **Function**: A callable object that executes a block of code.
+- **Date**: Represents dates and times.
+- **RegExp**: Regular expressions for pattern matching.
+
+#### Type Checking
+
+To check the type of a variable, use the typeof operator:
+
+```javascript
+console.log(typeof 42); // "number"
+console.log(typeof "Hello"); // "string"
+console.log(typeof true); // "boolean"
+console.log(typeof undefined); // "undefined"
+console.log(typeof null); // "object" (this is a known bug in JS)
+console.log(typeof Symbol("id")); // "symbol"
+console.log(typeof {}); // "object"
+console.log(typeof []); // "object"
+console.log(typeof function () {}); // "function"
+```
+
+#### Type Conversion
+
+JavaScript performs both implicit and explicit type conversions:
+
+##### Implicit Conversion (Type Coercion)
+
+```javascript
+console.log("5" - 2); // 3 (string converted to number)
+console.log("5" + 2); // "52" (number converted to string)
+console.log(true + 1); // 2 (boolean converted to number)
+```
+
+##### Explicit Conversion
+
+```javascript
+// String to Number
+console.log(Number("42")); // 42
+console.log(parseInt("42.5")); // 42
+console.log(parseFloat("42.5")); // 42.5
+
+// Number to String
+console.log(String(42)); // "42"
+console.log((42).toString()); // "42"
+
+// Boolean Conversion
+console.log(Boolean(1)); // true
+console.log(Boolean(0)); // false
+console.log(Boolean("")); // false
+console.log(Boolean("Hello")); // true
+```
+
+#### Type Casting
+
+You can also use the unary + operator to quickly cast to a number:
+
+```javascript
+let str = "123";
+let num = +str; // Converts string to number
+console.log(num); // 123
+```
+
+#### Special Cases
+
+##### NaN (Not a Number)
+
+```javascript
+console.log(typeof NaN); // "number"
+console.log(NaN == NaN); // false
+console.log(isNaN(NaN)); // true
+```
+
+##### Infinity and -Infinity
+
+```javascript
+console.log(1 / 0); // Infinity
+console.log(-1 / 0); // -Infinity
+```
+
+#### Frequently Asked Questions
+
+##### What are the two main categories of data types in JavaScript?
+
+Primitive Data Types (Number, BigInt, String, Boolean, Undefined, Null, Symbol) and Non-Primitive (Reference) Data Types (Object, Array, Function, etc.)
+
+##### Explain the difference between null and undefined.
+
+- **null**: Represents an intentional absence of value.
+- **undefined**: A variable that has been declared but not assigned a value.
+
+##### How can you check the type of a variable?
+
+Use the typeof operator. Example: `typeof 42` returns "number".
+
+##### What is the result of typeof null and why?
+
+The result is "object". This is a long-standing bug in JavaScript due to how types were originally implemented.
+
+##### How can you convert a string to a number?
+
+Use `Number()`, `parseInt()`, `parseFloat()`, or the unary + operator. Example: `Number('42')` returns 42.
+
+##### What will be the output of console.log(5 + '5')?
+
+"55" (string concatenation due to implicit type coercion).
+
+##### How does JavaScript handle implicit type coercion?
+
+JavaScript automatically converts types to match the operation, like converting strings to numbers or booleans to numbers.
+
+##### What is NaN? How can you check if a value is NaN?
+
+NaN stands for "Not a Number". Check using `isNaN(value)`.
+
+##### Explain the concept of type coercion with examples.
+
+Implicitly converting types, like `console.log('5' - 2)` results in 3.
+
+##### What is a Symbol and why would you use it?
+
+A Symbol is a unique identifier. Useful for adding unique property keys to objects.
+
+##### How do you convert a boolean value to a string?
+
+Use `String(true)` or `true.toString()`.
+
+##### What is the difference between parseInt() and Number()?
+
+`parseInt()` parses until a non-numeric character is found. `Number()` converts the whole string to a number or returns NaN if invalid.
+
+##### How do you explicitly convert a number to a string?
+
+Use `String(42)` or `(42).toString()`.
+
+##### What is the output of Boolean('false')?
+
+`true`, since a non-empty string is truthy.
+
+##### How can you check if a variable is an array?
+
+Use `Array.isArray(value)`.
+
+##### What is the difference between == and ===?
+
+`==` compares values with type coercion. `===` checks value and type without coercion.
+
+##### What will console.log(1 + true) output?
+
+2, since true is coerced to 1.
+
+##### How do you handle conversions between data types safely?
+
+Use explicit conversions like `Number()`, `String()`, etc.
+
+##### Why is typeof null an "object"?
+
+It's a legacy bug from JavaScript's early days.
+
+##### How can you create a BigInt?
+
+By appending n to an integer: `let big = 12345678901234567890n`.
+
+export default ({ children }) => (
+  <div className="prose max-w-none">{children}</div>
+);
+
+;

@@ -1,6 +1,7 @@
 {
   "basic": "Basic",
   "history": "History",
+  "data_types": "Data Types",
   "opp": "OPP",
   "use_strict": "Use Strict",
   "function": "Functions",
@@ -18,5 +19,6 @@
   "v8": "V8",
   "execution_context": "Execution Context",
   "closure": "Closure",
+  "prototype": "Prototype",
   "code": "Code"
 }
