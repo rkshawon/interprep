@@ -44,17 +44,19 @@ person.innerFunc();
 
 ##### Important Note on 'this' Behavior
 
-- In constructor functions, 'this' behaves consistently between arrow functions and normal functions when invoked with 'new'
-- Outside constructor functions:
-  - Arrow functions: 'this' is lexically scoped and maintains its value
-  - Normal functions: 'this' value depends on the caller or invocation context
+In constructor functions, 'this' behaves consistently between arrow functions and normal functions when invoked with 'new'
+
+Outside constructor functions:
+
+- Arrow functions: 'this' is lexically scoped and maintains its value
+- Normal functions: 'this' value depends on the caller or invocation context
 
 #### The 'new' Keyword
 
 The 'new' keyword creates an instance of an object from a constructor function. When used, it performs three main operations:
 
 1. Creates an empty object
-2. Sets the object's internal Prototype property (**proto**) to match the constructor function's prototype
+2. Sets the object's internal Prototype property (proto) to match the constructor function's prototype
 3. Binds 'this' in the constructor to the new object
 4. Returns the new object
 
@@ -95,10 +97,10 @@ console.log(studObj.__proto__); // object
 
 ##### Important Notes
 
-- **proto** exists on all JavaScript objects
-- Function's prototype property accessible via `<function-name>.prototype`
+- `__proto__` exists on all JavaScript objects
+- Function's prototype property accessible via **function-name** prototype
 - Objects don't expose prototype property directly
-- Use **proto** for debugging, avoid direct modification
+- Use `__proto__` for debugging, avoid direct modification
 - Use constructor function/class prototypes for inheritance structure
 
 #### Constructor Functions
@@ -109,6 +111,103 @@ Constructor functions are special functions that:
 - Enable object instantiation
 - Implement inheritance
 - Can be normal functions or function expressions
+
+#### Object-Oriented Programming in JavaScript
+
+JavaScript supports Object-Oriented Programming (OOP) through ES6 classes and prototypal inheritance. It allows us to achieve the four pillars of OOP:
+
+##### Encapsulation
+
+Encapsulation means bundling data (properties) and methods (functions) into a single unit — a class or object.
+
+Private fields (using #) and closures can be used to achieve true encapsulation.
+
+```javascript
+class Person {
+  #age; // private property
+
+  constructor(name, age) {
+    this.name = name;
+    this.#age = age;
+  }
+
+  getAge() {
+    return this.#age;
+  }
+}
+
+const john = new Person("John", 30);
+console.log(john.getAge()); // 30
+console.log(john.#age); // Error: Private field '#age' must be declared in an enclosing class
+```
+
+##### Abstraction
+
+Abstraction hides the complex implementation details and only shows the necessary features.
+
+```javascript
+class Car {
+  constructor(brand) {
+    this.brand = brand;
+  }
+
+  startEngine() {
+    console.log(`${this.brand} engine started.`);
+  }
+}
+
+const myCar = new Car("Toyota");
+myCar.startEngine(); // Toyota engine started.
+```
+
+##### Inheritance
+
+Inheritance allows one class to inherit properties and methods from another class.
+
+```javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(`${this.name} makes a noise.`);
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log(`${this.name} barks.`);
+  }
+}
+
+const dog = new Dog("Rex");
+dog.speak(); // Rex barks.
+```
+
+##### Polymorphism
+
+Polymorphism means redefining methods in derived classes.
+
+```javascript
+class Shape {
+  area() {
+    console.log("Calculating area");
+  }
+}
+
+class Circle extends Shape {
+  area() {
+    console.log("Area of circle = πr²");
+  }
+}
+
+const shape = new Shape();
+const circle = new Circle();
+
+shape.area(); // Calculating area
+circle.area(); // Area of circle = πr²
+```
 
 #### Call, Apply, and Bind
 
@@ -126,6 +225,8 @@ These methods behave differently in strict vs non-strict mode:
 - null/undefined as first argument are replaced with global object
 - Less predictable behavior
 
-##### Usage Note
+export default ({ children }) => (
+  <div className="prose max-w-none">{children}</div>
+);
 
-ECMAScript 5+ allows scripts to opt into strict mode for improved semantics and easier problem identification.
+;
