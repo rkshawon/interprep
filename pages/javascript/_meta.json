@@ -3,6 +3,7 @@
   "history": "History",
   "data_types": "Data Types",
   "opp": "OPP",
+  "call_stack-event_loop": "Call Stack and Event Loop",
   "use_strict": "Use Strict",
   "function": "Functions",
   "functional_programming": "Functions Programming",
