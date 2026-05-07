@@ -16,7 +16,7 @@ Outside any function, `this` refers to the global object:
 console.log(this);
 // Browser: Window { ... }
 // Node.js: {} (strict mode) or global (non-strict mode) before node v12
-// From node v12 use globalThis or global only.
+// From node v12 {} for both strict and no-strict (Use globalThis or global only).
 ```
 
 ### Understanding `this` in Node.js Modules

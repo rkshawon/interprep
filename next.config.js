@@ -4,4 +4,15 @@ const withNextra = require("nextra")({
   unstable_staticImage: true,
 });
 
-module.exports = withNextra();
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config) => {
+    config.watchOptions = {
+      ignored: ["**/private-files/**"],
+    };
+
+    return config;
+  },
+};
+
+module.exports = withNextra(nextConfig);
