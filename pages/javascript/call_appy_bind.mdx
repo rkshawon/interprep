@@ -1,0 +1,470 @@
+## JavaScript Methods for Controlling 'this'
+
+#### 📞 1. call() Method
+
+##### Definition:
+
+`call()` is a method that allows you to invoke a function with a specific `this` value and arguments passed individually.
+
+##### Syntax:
+
+```javascript
+func.call(thisArg, arg1, arg2, ...);
+```
+
+- `func` — the function you want to call.
+- `thisArg` — the value to use as `this` when executing `func`.
+- `arg1, arg2, ...` — arguments passed one by one.
+
+##### Examples:
+
+###### ✅ Basic usage:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet: function (city) {
+    console.log(`Hello, my name is ${this.name} and I'm from ${city}.`);
+  },
+};
+
+const anotherPerson = { name: "Bob" };
+
+person.greet.call(anotherPerson, "New York"); // "Hello, my name is Bob and I'm from New York."
+```
+
+**What happened?**
+We used `call()` to borrow the `greet` method from `person` and applied it to `anotherPerson`.
+
+###### ✅ With primitive thisArg:
+
+If you pass a primitive value (like a string or number), JavaScript automatically boxes it (wraps it in an object).
+
+```javascript
+function show() {
+  console.log(this); // Boxed String Object
+}
+
+show.call("hello"); // [String: 'hello']
+```
+
+**Why?**
+Because `this` cannot be a primitive, JS wraps it using `String`, `Number`, or `Boolean` objects.
+
+###### ✅ Using call() for inheritance (without class):
+
+```javascript
+function Animal(name) {
+  this.name = name;
+}
+
+function Dog(name, breed) {
+  Animal.call(this, name); // Inherit `name` from Animal
+  this.breed = breed;
+}
+
+const myDog = new Dog("Buddy", "Golden Retriever");
+console.log(myDog); // { name: 'Buddy', breed: 'Golden Retriever' }
+```
+
+**Why use this?**
+This pattern was common before ES6 classes, allowing you to "inherit" constructor properties.
+
+#### 📲 2. apply() Method
+
+##### Definition:
+
+`apply()` works like `call()`, but it takes arguments as an array or array-like object.
+
+##### Syntax:
+
+```javascript
+func.apply(thisArg, [arg1, arg2, ...]);
+```
+
+- `thisArg` — the value of `this` inside the function.
+- `[arg1, arg2, ...]` — an array of arguments passed to the function.
+
+##### Examples:
+
+###### ✅ Basic usage:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet: function (city) {
+    console.log(`Hello, my name is ${this.name} and I'm from ${city}.`);
+  },
+};
+
+const anotherPerson = { name: "Bob" };
+
+person.greet.apply(anotherPerson, ["New York"]); // "Hello, my name is Bob and I'm from New York."
+```
+
+###### ✅ Why use apply() instead of call()?
+
+Use `apply()` when the arguments are already in an array — for example, when you don't know how many arguments will be passed.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+console.log(Math.max.apply(null, numbers)); // 5
+```
+
+**Why null?**
+`Math.max` doesn't rely on `this`, so `null` works just fine.
+
+###### ✅ Using with array-like objects (arguments):
+
+```javascript
+function sum() {
+  return Array.prototype.reduce.apply(arguments, [(a, b) => a + b]);
+}
+
+console.log(sum(1, 2, 3, 4)); // 10
+```
+
+**Why use apply()?**
+The `arguments` object is not an array, but it's array-like — so we use `apply()` to borrow array methods.
+
+#### 🔒 3. bind() Method
+
+##### Definition:
+
+`bind()` returns a new function with a fixed `this` value and optional preset arguments — without invoking the function immediately.
+
+##### Syntax:
+
+```javascript
+const boundFunc = func.bind(thisArg, arg1, arg2, ...);
+```
+
+- `thisArg` — the value of `this` inside the function.
+- `arg1, arg2, ...` — arguments passed to the bound function.
+
+##### Examples:
+
+###### ✅ Basic usage:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet: function (city) {
+    console.log(`Hello, my name is ${this.name} and I'm from ${city}.`);
+  },
+};
+
+const boundGreet = person.greet.bind(person, "London");
+boundGreet(); // "Hello, my name is Alice and I'm from London."
+```
+
+**Why use bind()?**
+To create a copy of the function with permanently bound values.
+
+###### ✅ Partial application (currying):
+
+```javascript
+function multiply(a, b) {
+  return a * b;
+}
+
+const double = multiply.bind(null, 2); // "a" is always 2
+console.log(double(4)); // 8
+```
+
+**Why use this?**
+Currying — pre-setting some arguments and letting the rest be passed later.
+
+###### ✅ Event listeners:
+
+`bind()` is useful when working with event handlers:
+
+```javascript
+const button = document.getElementById("myButton");
+const person = {
+  name: "Alice",
+  handleClick: function () {
+    console.log(`Clicked by ${this.name}`);
+  },
+};
+
+button.addEventListener("click", person.handleClick.bind(person));
+```
+
+**Why use bind()?**
+Without `bind()`, `this` would refer to the button, not `person`.
+
+#### 🚨 Key Differences:
+
+| Method | Invokes immediately? | Arguments type      | Returns a new function? |
+| ------ | -------------------- | ------------------- | ----------------------- |
+| call   | ✅ Yes               | Passed individually | ❌ No                   |
+| apply  | ✅ Yes               | Passed as an array  | ❌ No                   |
+| bind   | ❌ No                | Passed individually | ✅ Yes                  |
+
+#### 🧠 Advanced Concepts:
+
+##### ✅ 1. Chaining bind():
+
+You can bind multiple times — but only the first one matters:
+
+```javascript
+const person = { name: "Alice" };
+
+function sayHi() {
+  console.log(this.name);
+}
+
+const boundOnce = sayHi.bind(person);
+const boundTwice = boundOnce.bind({ name: "Bob" });
+
+boundTwice(); // "Alice" — the first bind "sticks"
+```
+
+**Why?**
+A bound function's `this` cannot be changed.
+
+##### ✅ 2. Using with setTimeout:
+
+Ensure `this` works correctly inside timeouts:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet: function () {
+    setTimeout(
+      function () {
+        console.log(this.name);
+      }.bind(this),
+      1000
+    ); // "Alice"
+  },
+};
+
+person.greet();
+```
+
+**Why bind here?**
+`setTimeout` changes `this` to `window` (or `globalThis` in Node.js), so we re-bind it.
+
+##### ✅ 3. Arrow functions and this:
+
+Arrow functions don't have their own `this` — they inherit it from the outer scope:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet: () => {
+    console.log(this.name); // `this` is from the outer scope
+  },
+};
+
+person.greet(); // undefined (outer scope is global)
+```
+
+#### 🌶️ 1. Currying in JavaScript
+
+**Definition:** Currying is a functional programming technique where a function is transformed into a sequence of **nested functions** — each taking **one argument at a time**.
+
+##### Basic Syntax:
+
+```javascript
+const curry =
+  (fn) =>
+  (...args) =>
+    args.length >= fn.length ? fn(...args) : curry(fn.bind(null, ...args));
+```
+
+##### Examples:
+
+##### ✅ Simple currying:
+
+```javascript
+function add(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+
+console.log(add(1)(2)(3)); // 6
+```
+
+- **Why use currying?**
+  - Reusability — you can **preset** some arguments.
+
+##### ✅ Real-world example:
+
+Let's say you want to build a logging function that always includes a **log level**:
+
+```javascript
+const log = (level) => (message) => console.log(`[${level}] ${message}`);
+
+const info = log("INFO");
+const warn = log("WARN");
+
+info("Server started"); // [INFO] Server started
+warn("Low disk space"); // [WARN] Low disk space
+```
+
+- **Why use currying here?**
+  - You don't need to specify the log level every time — just once.
+
+##### ✅ Partial application:
+
+Currying lets you pre-apply some arguments — known as **partial application**:
+
+```javascript
+const multiply = (a) => (b) => a * b;
+const double = multiply(2);
+console.log(double(4)); // 8
+```
+
+- **Difference from currying:**
+  - **Partial application** allows you to **partially** apply arguments, but **currying forces single-argument calls**.
+
+##### ✅ Converting normal functions to curried:
+
+```javascript
+const curry =
+  (fn) =>
+  (...args) =>
+    args.length >= fn.length
+      ? fn(...args)
+      : (...nextArgs) => curry(fn)(...args, ...nextArgs);
+
+const sum = (a, b, c) => a + b + c;
+const curriedSum = curry(sum);
+
+console.log(curriedSum(1)(2)(3)); // 6
+console.log(curriedSum(1, 2)(3)); // 6
+```
+
+- **Why this matters:**
+  - Now, you can **chain** or pass arguments however you like.
+
+##### 🤝 2. Method Borrowing
+
+**Definition:** Method borrowing lets you use methods from **one object** in **another object** — without copying the methods.
+
+###### Examples:
+
+###### ✅ Basic method borrowing:
+
+```javascript
+const person = {
+  name: "Alice",
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  },
+};
+
+const anotherPerson = { name: "Bob" };
+
+// Borrow greet method
+person.greet.call(anotherPerson); // Hello, my name is Bob
+```
+
+- **Why use method borrowing?**
+  - To **reuse methods** without duplicating code.
+
+###### ✅ Borrowing array methods:
+
+Use **array methods** on **array-like objects**:
+
+```javascript
+const arrayLike = {
+  0: "apple",
+  1: "banana",
+  length: 2,
+};
+
+console.log(Array.prototype.join.call(arrayLike, ", ")); // "apple, banana"
+```
+
+- **Why use this?**
+  - **DOM NodeLists** and `arguments` are **array-like** but don't have array methods — this trick works perfectly.
+
+###### ✅ Borrowing with `apply`:
+
+```javascript
+const max = Math.max.apply(null, [1, 2, 3, 4, 5]);
+console.log(max); // 5
+```
+
+- **Why use `apply`?**
+  - It's great when you don't know the argument count ahead of time.
+
+##### 🎯 3. Event Binding
+
+**Definition:** Event binding refers to **attaching event handlers** to DOM elements so they respond to events like clicks or hovers.
+
+###### ✅ Basic event binding:
+
+```javascript
+const button = document.getElementById("myButton");
+button.addEventListener("click", function () {
+  console.log("Button clicked!");
+});
+```
+
+- **What happens?**
+  - When clicked, the callback runs.
+
+###### ✅ Preserving `this` with `bind`:
+
+`this` can be tricky in event handlers — especially with class methods:
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+
+  bindButton() {
+    document
+      .getElementById("btn")
+      .addEventListener("click", this.greet.bind(this));
+  }
+}
+
+const person = new Person("Alice");
+person.bindButton();
+```
+
+- **Why use `bind()`?**
+  - Without `bind`, `this` refers to the **button element** — not the class instance.
+
+###### ✅ Event delegation:
+
+Use **event delegation** to handle events for **dynamic elements**:
+
+```javascript
+document.getElementById("parent").addEventListener("click", function (e) {
+  if (e.target.matches(".child")) {
+    console.log("Child clicked:", e.target);
+  }
+});
+```
+
+- **Why use delegation?**
+  - If you add elements dynamically, direct event listeners won't work — but delegation will.
+
+###### ✅ Removing event listeners:
+
+Ensure you can remove listeners by using named functions:
+
+```javascript
+const handler = () => console.log("Clicked!");
+button.addEventListener("click", handler);
+button.removeEventListener("click", handler); // Works!
+```
+
+- **Why use named handlers?**
+  - Anonymous functions can't be removed — they're different instances.

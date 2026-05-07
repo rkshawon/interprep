@@ -1,0 +1,140 @@
+## Understanding JavaScript Prototypes and Prototypal Inheritance
+
+Prototypes and prototypal inheritance are foundational concepts in JavaScript that define how objects inherit properties and methods from one another. Understanding these concepts is crucial for mastering JavaScript's object-oriented programming.
+
+#### What is a Prototype in JavaScript?
+
+Every JavaScript object has an internal property known as `[[Prototype]]`, which points to another object or null. This linked object is called the object's prototype. When attempting to access a property on an object, JavaScript first looks for the property on the object itself. If it doesn't find it, it traverses up the prototype chain to the prototype object, and continues this process until it either finds the property or reaches the end of the chain (i.e., an object with a null prototype).
+
+#### Prototypal Inheritance
+
+Prototypal inheritance allows objects to inherit properties and methods from other objects directly. Unlike classical inheritance, which relies on classes, JavaScript's prototypal inheritance is more flexible and is based on object-to-object relationships. This means that objects can serve as prototypes for other objects, enabling the sharing and extension of behaviors.
+
+#### Creating Objects with Prototypal Inheritance
+
+There are several ways to create objects that inherit from prototypes:
+
+##### 1. Object Literals with Object.create()
+
+```javascript
+const parent = {
+  greet() {
+    console.log("Hello from parent");
+  },
+};
+
+const child = Object.create(parent);
+child.greet(); // Outputs: Hello from parent
+```
+
+In this example, `child` inherits the `greet` method from `parent`. The `Object.create()` method creates a new object with the specified prototype.
+
+##### 2. Constructor Functions
+
+```javascript
+function Parent() {
+  this.name = "Parent";
+}
+
+Parent.prototype.greet = function () {
+  console.log("Hello from " + this.name);
+};
+
+const child = new Parent();
+child.greet(); // Outputs: Hello from Parent
+```
+
+Here, `Parent` is a constructor function, and its prototype includes the `greet` method. Instances created with `new Parent()` inherit this method.
+
+#### Common Interview Questions on Prototypes and Prototypal Inheritance
+
+##### What is a prototype in JavaScript?
+
+A prototype is an object from which other objects inherit properties. Every JavaScript object has a `[[Prototype]]` property that points to another object or null.
+
+##### How does prototypal inheritance differ from classical inheritance?
+
+In classical inheritance, classes define the structure and behavior of objects, and objects are instances of these classes. In prototypal inheritance, objects inherit directly from other objects without the need for classes, allowing for more flexible and dynamic inheritance structures.
+
+##### What is the prototype chain?
+
+The prototype chain is the series of links between objects through their prototypes. When accessing a property, JavaScript traverses this chain until it finds the property or reaches an object with a null prototype.
+
+##### How do you set an object's prototype in JavaScript?
+
+An object's prototype can be set using `Object.create()`, the `__proto__` property, or the `Object.setPrototypeOf()` method. For example:
+
+```javascript
+const parent = {
+  /* properties */
+};
+const child = Object.create(parent);
+```
+
+Or:
+
+```javascript
+const child = {};
+child.__proto__ = parent;
+```
+
+Or:
+
+```javascript
+const child = {};
+Object.setPrototypeOf(child, parent);
+```
+
+Each of these methods sets `parent` as the prototype of `child`.
+
+##### What is the constructor property in a prototype?
+
+The constructor property references the function that created the instance's prototype. For example:
+
+```javascript
+function Parent() {}
+const child = new Parent();
+console.log(child.constructor === Parent); // true
+```
+
+Here, `child.constructor` points to the `Parent` function.
+
+#### Output-Based Interview Questions
+
+##### Question 1:
+
+```javascript
+function Parent() {
+  this.name = "Parent";
+}
+
+Parent.prototype.greet = function () {
+  console.log("Hello from " + this.name);
+};
+
+const child = new Parent();
+delete child.name;
+child.greet();
+```
+
+**Answer:** `Hello from undefined`
+
+**Explanation:** The `delete child.name;` statement removes the name property from the `child` object. Since `name` is an own property of `child` and not found on its prototype, `child.name` becomes undefined. Therefore, `child.greet();` logs 'Hello from undefined'.
+
+##### Question 2:
+
+```javascript
+const parent = {
+  name: "Parent",
+  greet() {
+    console.log("Hello from " + this.name);
+  },
+};
+
+const child = Object.create(parent);
+child.greet();
+```
+
+**Answer:** `Hello from Parent`
+
+**Explanation:** The `child` object inherits from the `parent` object, including the `name` property and `greet` method. When `child.greet()` is called, it uses the inherited `name` property from `parent`.

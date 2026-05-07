@@ -1,7 +1,9 @@
 {
   "basic": "Basic",
   "history": "History",
+  "data_types": "Data Types",
   "opp": "OPP",
+  "call_stack-event_loop": "Call Stack and Event Loop",
   "use_strict": "Use Strict",
   "function": "Functions",
   "functional_programming": "Functions Programming",
@@ -14,5 +16,10 @@
   "array_and_fn_as_Object": "Array And Function As Object",
   "polyfill": "Polyfill",
   "promises": "Promises",
+  "call_appy_bind": "Call, Apply and Bind",
+  "v8": "V8",
+  "execution_context": "Execution Context",
+  "closure": "Closure",
+  "prototype": "Prototype",
   "code": "Code"
 }

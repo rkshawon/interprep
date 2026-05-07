@@ -1,0 +1,275 @@
+## Closures in JavaScript
+
+## ##🌟 What is a Closure?
+
+A closure is a function that remembers its outer variables and can access them even after the outer function has finished executing.
+
+In simple terms, a closure allows an inner function to remember and use variables from its outer function's scope even after the outer function has returned.
+
+## ##⚙️ How Closures Work Under the Hood
+
+##### Execution Context
+
+When JavaScript executes a function, it creates an Execution Context with two main phases:
+
+**Creation Phase:**
+
+- A new execution context is created.
+- Variables, functions, and the this keyword are set up.
+- Outer variables (from the parent scope) are referenced through the [[Environment]] (or lexical environment).
+
+**Execution Phase:**
+
+- Code is executed line by line.
+- Functions can access their outer scopes using the Scope Chain.
+
+##### Memory Creation
+
+- When a function is declared, it captures the surrounding variables (using lexical scoping).
+- Even after the outer function exits, the inner function retains a reference to those variables.
+- These variables are kept in memory because the inner function forms a closure over them.
+
+##### Example:
+
+```javascript
+function outer() {
+  let count = 0; // Outer variable
+
+  return function inner() {
+    count++;
+    console.log(count);
+  };
+}
+
+const counter = outer();
+counter(); // 1
+counter(); // 2
+```
+
+**Explanation:**
+
+1. `outer()` returns `inner()`.
+2. When `outer()` finishes execution, its execution context is removed from the stack, but the `count` variable remains in memory because the returned `inner()` function still holds a reference to it.
+3. Each time `counter()` is called, it accesses the `count` variable via closure.
+
+## ##🔥 Common Interview Questions on Closures
+
+##### 1. What is a closure in JavaScript?
+
+**Answer:** A closure is created when a function remembers the variables from its outer scope even after the outer function has finished executing. This allows the inner function to access those variables anytime.
+
+##### 2. How do closures help achieve data encapsulation?
+
+**Answer:** Closures allow variables to be private by keeping them within a function's lexical scope.
+
+**Example:**
+
+```javascript
+function createCounter() {
+  let count = 0;
+
+  return {
+    increment() {
+      count++;
+    },
+    getCount() {
+      return count;
+    },
+  };
+}
+
+const counter = createCounter();
+console.log(counter.getCount()); // 0
+counter.increment();
+console.log(counter.getCount()); // 1
+```
+
+Here, `count` cannot be accessed directly — only via the methods provided, ensuring encapsulation.
+
+##### 3. Why do loops with var and setTimeout produce unexpected outputs?
+
+**Answer:** `var` is function-scoped, so the loop's callback captures the same variable, which has the final value after the loop ends.
+
+**Example:**
+
+```javascript
+for (var i = 1; i <= 3; i++) {
+  setTimeout(() => console.log(i), 1000);
+}
+// Outputs: 4, 4, 4
+```
+
+**Fix:** Use `let` or create a closure.
+
+```javascript
+for (var i = 1; i <= 3; i++) {
+  (function (j) {
+    setTimeout(() => console.log(j), 1000);
+  })(i);
+}
+// Outputs: 1, 2, 3
+```
+
+##### 4. What is the difference between a closure and a callback?
+
+**Answer:**
+
+- A callback is a function passed to another function to be executed later.
+- A closure is created when a function captures variables from its outer scope.
+
+**Example:**
+
+```javascript
+function fetchData(callback) {
+  const data = "Hello";
+  callback(data);
+}
+
+fetchData((data) => console.log(data)); // 'Hello'
+```
+
+Here, the callback doesn't necessarily create a closure unless it accesses outer variables.
+
+##### 5. How do closures work in React hooks?
+
+**Answer:** React hooks like useState and useEffect rely on closures to capture state values at the time of rendering.
+
+**Example:**
+
+```jsx
+function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  function handleClick() {
+    setCount(count + 1); // closure over count
+  }
+
+  return <button onClick={handleClick}>{count}</button>;
+}
+```
+
+Here, `handleClick` forms a closure by accessing `count` even though the component might re-render.
+
+## ##🚀 Top 10 Closure Interview Coding Questions
+
+##### 1. Basic closure example:
+
+```javascript
+function outer() {
+  let a = 10;
+  return function inner() {
+    console.log(a);
+  };
+}
+const innerFunc = outer();
+innerFunc();
+```
+
+**Q: What will be logged?**  
+**A:** 10 — `inner()` retains access to `a`.
+
+##### 2. Counter with closure:
+
+```javascript
+function createCounter() {
+  let count = 0;
+  return function () {
+    return ++count;
+  };
+}
+const counter = createCounter();
+console.log(counter()); // ?
+console.log(counter()); // ?
+```
+
+**A:** 1, 2 — The count is preserved.
+
+##### 3. Loop with setTimeout:
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 1000);
+}
+```
+
+**Q: What will be logged?**  
+**A:** 3, 3, 3 — Fixed by using `let` or IIFE.
+
+##### 4. Private variables:
+
+```javascript
+function secret() {
+  let hidden = "hidden";
+  return () => hidden;
+}
+const getSecret = secret();
+console.log(getSecret()); // ?
+```
+
+**A:** 'hidden'
+
+##### 5. Closure with multiple functions:
+
+```javascript
+function multiplier(factor) {
+  return (number) => number * factor;
+}
+const double = multiplier(2);
+console.log(double(5)); // ?
+```
+
+**A:** 10
+
+##### 6. Preserving variable values:
+
+```javascript
+function createAdder(x) {
+  return function (y) {
+    return x + y;
+  };
+}
+const add5 = createAdder(5);
+console.log(add5(3)); // ?
+```
+
+**A:** 8
+
+##### 7. Functions returning functions:
+
+```javascript
+const add = (a) => (b) => a + b;
+console.log(add(2)(3)); // ?
+```
+
+**A:** 5
+
+##### 8. Chained closures:
+
+```javascript
+function outer() {
+  let count = 0;
+  return function inner() {
+    return ++count;
+  };
+}
+const counter1 = outer();
+const counter2 = outer();
+console.log(counter1()); // ?
+console.log(counter2()); // ?
+```
+
+**A:** 1, 1
+
+##### 9. Closure in setTimeout:
+
+```javascript
+const arr = [1, 2, 3];
+arr.forEach((val) => setTimeout(() => console.log(val), 1000));
+```
+
+**A:** 1, 2, 3
+
+##### 10. Memory leaks with closures:
+
+**Q: How can closures cause memory leaks?**  
+**A:** If references to outer scopes are not cleared, memory can be retained unnecessarily.

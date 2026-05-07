@@ -6,7 +6,7 @@ export const DynamicEditor = dynamic(() => import("./components/CodeEditor"), {
 });
 
 export function CodePractice() {
-  const [code, setCode] = useState('// Write your code here');
+  const [code, setCode] = useState('console.log("Hello, World!")');
   const [output, setOutput] = useState('');
 
 const evaluateCode = async (codeToEval) => {
@@ -38,7 +38,6 @@ const customConsole = {
       `;
 
       await new Function('customConsole', transformedCode)(customConsole);
-      await new Promise(resolve => setTimeout(resolve, 100));
       return logs.join('\n');
     } catch (error) {
       return `Error: ${error.message}`;
@@ -49,6 +48,7 @@ const customConsole = {
 const handleRunCode = async () => {
 try {
 
+    setOutput("")
     const result = await evaluateCode(code);
     setOutput(result);
 
