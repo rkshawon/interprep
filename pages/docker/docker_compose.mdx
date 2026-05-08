@@ -1,0 +1,920 @@
+# Docker Compose Complete Guide (Basic to Advanced)
+
+# Table of Contents
+
+1. What is Docker Compose
+2. Why Docker Compose Exists
+3. Compose Architecture
+4. Installing Docker Compose
+5. Basic docker-compose.yml Structure
+6. First Simple Example
+7. Running Compose Commands
+8. Services Explained
+9. Networks in Compose
+10. Volumes in Compose
+11. Environment Variables
+12. Using .env Files
+13. Multiple Containers Example
+14. MySQL + Node.js Example
+15. Bind Mounts for Development
+16. Restart Policies
+17. Health Checks
+18. depends_on Explained
+19. Custom Networks
+20. Named Volumes
+21. Multi-Environment Setup
+22. Override Files
+23. Scaling Containers
+24. Production Best Practices
+25. Multi-Stage Docker + Compose
+26. Debugging Compose
+27. Logs and Monitoring
+28. Common Mistakes
+29. Real Production Example
+30. Most Important Compose Commands
+
+---
+
+# 1. What is Docker Compose
+
+Docker Compose is a tool for managing multiple Docker containers together.
+
+Instead of writing long docker commands:
+
+```bash
+docker run ...
+docker run ...
+docker run ...
+```
+
+You define everything inside:
+
+```text
+docker-compose.yml
+```
+
+Then run:
+
+```bash
+docker compose up
+```
+
+---
+
+# 2. Why Docker Compose Exists
+
+Real applications usually need multiple services:
+
+| Service       | Example  |
+| ------------- | -------- |
+| Backend       | Node.js  |
+| Database      | MySQL    |
+| Cache         | Redis    |
+| Reverse Proxy | Nginx    |
+| Queue         | RabbitMQ |
+
+Managing them manually becomes difficult.
+
+Compose solves this.
+
+---
+
+# 3. Compose Architecture
+
+```text
+docker-compose.yml
+        ↓
+Docker Compose
+        ↓
+Multiple Containers
+        ↓
+Shared Network + Volumes
+```
+
+---
+
+# 4. Installing Docker Compose
+
+Docker Desktop already includes Compose.
+
+Check version:
+
+```bash
+docker compose version
+```
+
+---
+
+# 5. Basic docker-compose.yml Structure
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+```
+
+---
+
+# Main Sections
+
+| Section  | Purpose                 |
+| -------- | ----------------------- |
+| services | containers              |
+| volumes  | persistent storage      |
+| networks | container communication |
+| env_file | environment variables   |
+
+---
+
+# 6. First Simple Example
+
+## docker-compose.yml
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+```
+
+---
+
+## Start App
+
+```bash
+docker compose up
+```
+
+---
+
+## Detached Mode
+
+```bash
+docker compose up -d
+```
+
+---
+
+# 7. Running Compose Commands
+
+## Start Services
+
+```bash
+docker compose up
+```
+
+---
+
+## Start in Background
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Stop Services
+
+```bash
+docker compose down
+```
+
+---
+
+## Restart Services
+
+```bash
+docker compose restart
+```
+
+---
+
+## Rebuild Containers
+
+```bash
+docker compose up --build
+```
+
+---
+
+## View Running Containers
+
+```bash
+docker compose ps
+```
+
+---
+
+# 8. Services Explained
+
+Each service = one container.
+
+Example:
+
+```yaml
+services:
+  backend:
+    build: .
+
+  mysql:
+    image: mysql:8
+```
+
+Creates:
+
+- backend container
+- mysql container
+
+---
+
+# 9. Networks in Compose
+
+Compose automatically creates internal network.
+
+Containers communicate using service names.
+
+Example:
+
+```env
+DB_HOST=mysql
+```
+
+NOT:
+
+```env
+DB_HOST=localhost
+```
+
+---
+
+# Why?
+
+Inside containers:
+
+```text
+localhost = current container
+```
+
+---
+
+# 10. Volumes in Compose
+
+Volumes preserve data.
+
+Example:
+
+```yaml
+volumes:
+  mysql-data:
+```
+
+Usage:
+
+```yaml
+services:
+  mysql:
+    volumes:
+      - mysql-data:/var/lib/mysql
+```
+
+---
+
+# 11. Environment Variables
+
+## Inline Environment
+
+```yaml
+environment:
+  PORT: 8000
+  NODE_ENV: production
+```
+
+---
+
+## Env File
+
+```yaml
+env_file:
+  - .env
+```
+
+---
+
+# 12. Using .env Files
+
+## .env
+
+```env
+PORT=8000
+DB_HOST=mysql
+DB_USER=root
+DB_PASS=admin
+```
+
+---
+
+## Compose
+
+```yaml
+services:
+  app:
+    env_file:
+      - .env
+```
+
+---
+
+# 13. Multiple Containers Example
+
+```yaml
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: redis:7
+
+  mysql:
+    image: mysql:8
+```
+
+---
+
+# 14. MySQL + Node.js Example
+
+## docker-compose.yml
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: test_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+```
+
+---
+
+# Important Change
+
+Inside app .env:
+
+```env
+DB_HOST=mysql
+```
+
+NOT:
+
+```env
+DB_HOST=localhost
+```
+
+Because Compose networking uses service names.
+
+---
+
+# 15. Bind Mounts for Development
+
+Live code sync.
+
+```yaml
+volumes:
+  - .:/app
+```
+
+Example:
+
+```yaml
+services:
+  app:
+    volumes:
+      - .:/app
+```
+
+---
+
+# Benefits
+
+- no rebuild after code changes
+- hot reload works
+- faster development
+
+---
+
+# 16. Restart Policies
+
+```yaml
+restart: unless-stopped
+```
+
+Options:
+
+| Policy         | Meaning           |
+| -------------- | ----------------- |
+| no             | default           |
+| always         | always restart    |
+| on-failure     | restart on crash  |
+| unless-stopped | production common |
+
+---
+
+# 17. Health Checks
+
+```yaml
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:8000"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+```
+
+---
+
+# Purpose
+
+Docker monitors service health.
+
+---
+
+# 18. depends_on Explained
+
+```yaml
+depends_on:
+  - mysql
+```
+
+Meaning:
+
+- start mysql first
+- then app
+
+⚠️ Important:
+
+It does NOT guarantee DB is ready.
+Only container startup order.
+
+---
+
+# 19. Custom Networks
+
+## Create Network
+
+```yaml
+networks:
+  backend-network:
+```
+
+---
+
+## Use Network
+
+```yaml
+services:
+  app:
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+```
+
+---
+
+# 20. Named Volumes
+
+```yaml
+volumes:
+  mysql-data:
+```
+
+Docker stores data safely outside container.
+
+---
+
+# 21. Multi-Environment Setup
+
+## Development Compose
+
+```text
+docker-compose.yml
+```
+
+---
+
+## Production Compose
+
+```text
+docker-compose.prod.yml
+```
+
+---
+
+## Run Production
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+---
+
+# 22. Override Files
+
+Docker automatically loads:
+
+```text
+docker-compose.override.yml
+```
+
+Useful for:
+
+- local dev overrides
+- debugging
+- extra mounts
+
+---
+
+# 23. Scaling Containers
+
+```bash
+docker compose up --scale app=3
+```
+
+Creates:
+
+- app_1
+- app_2
+- app_3
+
+---
+
+# Important
+
+Port conflicts happen if fixed ports used.
+
+Usually combined with:
+
+- nginx
+- load balancer
+
+---
+
+# 24. Production Best Practices
+
+## Recommended
+
+- use named volumes
+- use health checks
+- separate prod/dev configs
+- avoid bind mounts in production
+- pin image versions
+- use restart policies
+- use multi-stage builds
+- keep secrets outside compose file
+
+---
+
+# 25. Multi-Stage Docker + Compose
+
+## Dockerfile
+
+```Dockerfile
+FROM node:20 AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+
+RUN npm ci --only=production
+
+CMD ["node", "dist/index.js"]
+```
+
+---
+
+## Compose
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+```
+
+---
+
+# 26. Debugging Compose
+
+## View Logs
+
+```bash
+docker compose logs
+```
+
+---
+
+## Follow Logs
+
+```bash
+docker compose logs -f
+```
+
+---
+
+## Specific Service Logs
+
+```bash
+docker compose logs app
+```
+
+---
+
+## Enter Container
+
+```bash
+docker compose exec app sh
+```
+
+---
+
+# 27. Logs and Monitoring
+
+## Resource Usage
+
+```bash
+docker stats
+```
+
+---
+
+## Inspect Compose Services
+
+```bash
+docker compose ps
+```
+
+---
+
+## Inspect Network
+
+```bash
+docker network ls
+```
+
+---
+
+# 28. Common Mistakes
+
+## Using localhost Between Containers
+
+❌ Wrong:
+
+```env
+DB_HOST=localhost
+```
+
+✅ Correct:
+
+```env
+DB_HOST=mysql
+```
+
+---
+
+## Forgetting Volumes
+
+Without volume:
+
+- database data lost after deletion
+
+---
+
+## Using Development Image in Production
+
+Avoid:
+
+```Dockerfile
+npm install
+npm start
+```
+
+Use:
+
+```Dockerfile
+npm ci --only=production
+node dist/index.js
+```
+
+---
+
+# 29. Real Production Example
+
+## docker-compose.prod.yml
+
+```yaml
+services:
+  app:
+    build: .
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: test_db
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+```
+
+---
+
+# Start Production
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+---
+
+# Stop Production
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```
+
+---
+
+# 30. Most Important Compose Commands
+
+## Start Services
+
+```bash
+docker compose up
+```
+
+---
+
+## Start Detached
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Rebuild
+
+```bash
+docker compose up --build
+```
+
+---
+
+## Stop Services
+
+```bash
+docker compose down
+```
+
+---
+
+## View Logs
+
+```bash
+docker compose logs -f
+```
+
+---
+
+## Enter Container
+
+```bash
+docker compose exec app sh
+```
+
+---
+
+## List Containers
+
+```bash
+docker compose ps
+```
+
+---
+
+# Recommended Workflow for Your Express + MySQL App
+
+## Step 1
+
+Create:
+
+```text
+docker-compose.yml
+```
+
+---
+
+## Step 2
+
+Move MySQL into Compose.
+
+---
+
+## Step 3
+
+Change:
+
+```env
+DB_HOST=mysql
+```
+
+---
+
+## Step 4
+
+Run:
+
+```bash
+docker compose up -d --build
+```
+
+---
+
+## Step 5
+
+Open:
+
+```text
+http://localhost:8000
+```
+
+---
+
+# Most Important Concepts to Remember
+
+| Concept      | Important Rule                       |
+| ------------ | ------------------------------------ |
+| localhost    | current container only               |
+| service name | container-to-container communication |
+| volume       | persistent storage                   |
+| bind mount   | live sync                            |
+| compose      | manages multiple containers          |
+| depends_on   | startup order only                   |
+| env_file     | loads environment variables          |
+
+---
+
+# Most Important Compose Commands
+
+```bash
+docker compose up -d
+docker compose down
+docker compose logs -f
+docker compose exec app sh
+docker compose ps
+docker compose up --build
+```

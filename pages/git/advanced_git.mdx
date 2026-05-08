@@ -1,0 +1,646 @@
+# Advanced Git Commands and Workflow Guide
+
+# Table of Contents
+
+1. Git Internals
+2. Branching Strategies
+3. Rebase vs Merge
+4. Cherry Pick
+5. Stash Advanced Usage
+6. Reset vs Revert
+7. Detached HEAD
+8. Interactive Rebase
+9. Git Reflog
+10. Squash Commits
+11. Tags and Releases
+12. Remote Branch Management
+13. Conflict Resolution
+14. Git Hooks
+15. Bisect Debugging
+16. Worktrees
+17. Submodules
+18. Large File Handling
+19. Advanced Log Filtering
+20. Useful Aliases
+21. Production Best Practices
+
+---
+
+# 1. Git Internals
+
+Git has 3 major areas:
+
+| Area              | Meaning              |
+| ----------------- | -------------------- |
+| Working Directory | Current file changes |
+| Staging Area      | Prepared changes     |
+| Repository        | Saved commit history |
+
+Workflow:
+
+```text
+Edit files
+   ↓
+git add .
+   ↓
+git commit
+   ↓
+git push
+```
+
+Git commits are snapshots.
+
+Each commit has:
+
+- unique hash
+- parent commit
+- metadata
+- file snapshot
+
+Example commit hash:
+
+```text
+9c12abf2
+```
+
+---
+
+# 2. Branching Strategies
+
+## Feature Branch Workflow
+
+Create separate branch for each feature.
+
+```bash
+git checkout -b feature-login
+```
+
+Advantages:
+
+- isolated development
+- safer collaboration
+- easier reviews
+
+---
+
+## Main Branches
+
+| Branch      | Purpose                 |
+| ----------- | ----------------------- |
+| main/master | production code         |
+| develop     | integration branch      |
+| feature/\*  | new features            |
+| hotfix/\*   | urgent production fixes |
+
+---
+
+# 3. Rebase vs Merge
+
+## Merge
+
+```bash
+git merge feature-auth
+```
+
+Creates merge commit.
+
+History preserved.
+
+Example:
+
+```text
+A---B---C main
+     \   \
+      D---E feature
+```
+
+---
+
+## Rebase
+
+```bash
+git rebase main
+```
+
+Moves feature commits on top of latest branch.
+
+Cleaner history.
+
+Example:
+
+```text
+A---B---C main
+         \
+          D'---E' feature
+```
+
+---
+
+## When to Use
+
+| Use Case               | Recommended |
+| ---------------------- | ----------- |
+| Shared branch          | merge       |
+| Local cleanup          | rebase      |
+| Clean history          | rebase      |
+| Preserve exact history | merge       |
+
+---
+
+# 4. Cherry Pick
+
+Copy specific commit.
+
+```bash
+git cherry-pick commit-hash
+```
+
+Example:
+
+```bash
+git cherry-pick 9c12abf2
+```
+
+Useful for:
+
+- moving bug fixes
+- partial feature transfer
+- hotfixes
+
+---
+
+# 5. Advanced Stash Usage
+
+## Stash Current Changes
+
+```bash
+git stash
+```
+
+---
+
+## Named Stash
+
+```bash
+git stash save "working on payment api"
+```
+
+---
+
+## List Stashes
+
+```bash
+git stash list
+```
+
+---
+
+## Apply Specific Stash
+
+```bash
+git stash apply stash@{0}
+```
+
+---
+
+## Delete Stash
+
+```bash
+git stash drop stash@{0}
+```
+
+---
+
+# 6. Reset vs Revert
+
+## Reset
+
+Moves branch pointer backward.
+
+### Soft Reset
+
+```bash
+git reset --soft HEAD~1
+```
+
+Removes commit.
+Keeps changes staged.
+
+---
+
+### Mixed Reset
+
+```bash
+git reset HEAD~1
+```
+
+Removes commit.
+Keeps file changes unstaged.
+
+---
+
+### Hard Reset
+
+```bash
+git reset --hard HEAD~1
+```
+
+Deletes:
+
+- commit
+- staging
+- working changes
+
+⚠️ Dangerous.
+
+---
+
+## Revert
+
+Safer for shared branches.
+
+```bash
+git revert commit-hash
+```
+
+Creates NEW commit that undoes changes.
+
+---
+
+# 7. Detached HEAD
+
+Occurs when checking out specific commit.
+
+```bash
+git checkout 9c12abf2
+```
+
+You are no longer on a branch.
+
+Fix:
+
+```bash
+git checkout main
+```
+
+Or create branch:
+
+```bash
+git checkout -b recovery-branch
+```
+
+---
+
+# 8. Interactive Rebase
+
+Very powerful cleanup tool.
+
+```bash
+git rebase -i HEAD~5
+```
+
+Allows:
+
+- squash commits
+- rename messages
+- remove commits
+- reorder commits
+
+---
+
+## Common Options
+
+| Command | Meaning         |
+| ------- | --------------- |
+| pick    | keep commit     |
+| squash  | combine commits |
+| reword  | edit message    |
+| drop    | delete commit   |
+
+---
+
+# 9. Git Reflog
+
+Shows ALL reference history.
+
+```bash
+git reflog
+```
+
+Very useful for recovering lost commits.
+
+Example:
+
+```bash
+git reset --hard HEAD@{2}
+```
+
+---
+
+# 10. Squash Commits
+
+Combine multiple commits into one.
+
+```bash
+git rebase -i HEAD~3
+```
+
+Change:
+
+```text
+pick
+pick
+pick
+```
+
+To:
+
+```text
+pick
+squash
+squash
+```
+
+Useful before pull request.
+
+---
+
+# 11. Tags and Releases
+
+## Create Tag
+
+```bash
+git tag v1.0.0
+```
+
+---
+
+## Push Tag
+
+```bash
+git push origin v1.0.0
+```
+
+---
+
+## Annotated Tag
+
+```bash
+git tag -a v1.0.0 -m "production release"
+```
+
+---
+
+# 12. Remote Branch Management
+
+## Fetch Remote Branches
+
+```bash
+git fetch
+```
+
+---
+
+## List Remote Branches
+
+```bash
+git branch -r
+```
+
+---
+
+## Delete Remote Branch
+
+```bash
+git push origin --delete feature-auth
+```
+
+---
+
+# 13. Conflict Resolution
+
+Conflict markers:
+
+```text
+<<<<<<< HEAD
+Current branch
+=======
+Incoming branch
+>>>>>>> feature-auth
+```
+
+Fix manually.
+
+Then:
+
+```bash
+git add .
+git commit
+```
+
+---
+
+# 14. Git Hooks
+
+Automated scripts before actions.
+
+Location:
+
+```text
+.git/hooks
+```
+
+Examples:
+
+- pre-commit
+- pre-push
+- commit-msg
+
+Useful for:
+
+- linting
+- tests
+- formatting
+
+---
+
+# 15. Git Bisect
+
+Binary search for bad commit.
+
+```bash
+git bisect start
+```
+
+Mark bad:
+
+```bash
+git bisect bad
+```
+
+Mark good:
+
+```bash
+git bisect good commit-hash
+```
+
+Git automatically narrows problem commit.
+
+---
+
+# 16. Git Worktree
+
+Multiple working directories from same repo.
+
+```bash
+git worktree add ../hotfix hotfix-branch
+```
+
+Useful for:
+
+- parallel development
+- avoiding branch switching
+
+---
+
+# 17. Git Submodules
+
+Nested repositories.
+
+Add submodule:
+
+```bash
+git submodule add <repo-url>
+```
+
+Clone with submodules:
+
+```bash
+git clone --recurse-submodules <repo>
+```
+
+---
+
+# 18. Large File Handling
+
+Git is NOT optimized for huge binaries.
+
+Use Git LFS.
+
+Install:
+
+```bash
+git lfs install
+```
+
+Track files:
+
+```bash
+git lfs track "*.zip"
+```
+
+---
+
+# 19. Advanced Log Filtering
+
+## Graph View
+
+```bash
+git log --oneline --graph --all
+```
+
+---
+
+## Search by Author
+
+```bash
+git log --author="john"
+```
+
+---
+
+## Search by Message
+
+```bash
+git log --grep="fix"
+```
+
+---
+
+# 20. Useful Aliases
+
+## Add Alias
+
+```bash
+git config --global alias.st status
+```
+
+Usage:
+
+```bash
+git st
+```
+
+---
+
+## Popular Aliases
+
+```bash
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.cm commit
+```
+
+---
+
+# 21. Production Best Practices
+
+## Recommended Rules
+
+- never force push shared branches
+- commit small logical changes
+- use meaningful commit messages
+- pull before push
+- rebase feature branches frequently
+- squash noisy commits before merge
+- protect main branch
+- use pull requests
+
+---
+
+# Recommended Professional Workflow
+
+```bash
+# Update main branch
+git checkout main
+git pull
+
+# Create feature branch
+git checkout -b feature-payment
+
+# Work and commit
+git add .
+git commit -m "added stripe payment"
+
+# Rebase latest main
+git fetch origin
+git rebase origin/main
+
+# Push branch
+git push -u origin feature-payment
+```
+
+---
+
+# Most Important Advanced Commands
+
+```bash
+git rebase -i HEAD~5
+git cherry-pick <hash>
+git reflog
+git stash
+git reset --soft HEAD~1
+git revert <hash>
+git bisect start
+git log --graph --oneline --all
+```

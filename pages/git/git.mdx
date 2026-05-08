@@ -1,0 +1,410 @@
+# Git Common Commands Cheat Sheet
+
+## 1. Initialize Git Repository
+
+```bash
+git init
+```
+
+Creates a new local Git repository.
+
+---
+
+# 2. Check Git Status
+
+```bash
+git status
+```
+
+Shows:
+
+- modified files
+- staged files
+- untracked files
+- current branch
+
+---
+
+# 3. Add Files to Staging
+
+Add single file:
+
+```bash
+git add filename
+```
+
+Add all files:
+
+```bash
+git add .
+```
+
+---
+
+# 4. Commit Changes
+
+```bash
+git commit -m "your message"
+```
+
+Example:
+
+```bash
+git commit -m "added login api"
+```
+
+---
+
+# 5. View Commit History
+
+```bash
+git log
+```
+
+Compact version:
+
+```bash
+git log --oneline
+```
+
+---
+
+# 6. Create New Branch
+
+```bash
+git branch branch-name
+```
+
+Example:
+
+```bash
+git branch feature-auth
+```
+
+---
+
+# 7. Switch Branch
+
+```bash
+git checkout branch-name
+```
+
+Example:
+
+```bash
+git checkout feature-auth
+```
+
+---
+
+# 8. Create + Switch Branch Together
+
+```bash
+git checkout -b branch-name
+```
+
+Example:
+
+```bash
+git checkout -b feature-auth
+```
+
+---
+
+# 9. View Branches
+
+```bash
+git branch
+```
+
+Current branch has `*` symbol.
+
+---
+
+# 10. Merge Branch
+
+Switch to target branch first:
+
+```bash
+git checkout main
+```
+
+Merge branch:
+
+```bash
+git merge feature-auth
+```
+
+---
+
+# 11. Delete Branch
+
+```bash
+git branch -d branch-name
+```
+
+Force delete:
+
+```bash
+git branch -D branch-name
+```
+
+---
+
+# 12. Connect Remote Repository
+
+```bash
+git remote add origin <repo-url>
+```
+
+Example:
+
+```bash
+git remote add origin https://github.com/user/project.git
+```
+
+---
+
+# 13. View Remote Repositories
+
+```bash
+git remote -v
+```
+
+---
+
+# 14. Push Code to Remote
+
+First push:
+
+```bash
+git push -u origin main
+```
+
+Normal push:
+
+```bash
+git push
+```
+
+---
+
+# 15. Pull Latest Changes
+
+```bash
+git pull
+```
+
+---
+
+# 16. Clone Repository
+
+```bash
+git clone <repo-url>
+```
+
+Example:
+
+```bash
+git clone https://github.com/user/project.git
+```
+
+---
+
+# 17. Fetch Latest Remote Changes
+
+```bash
+git fetch
+```
+
+Downloads updates without merging.
+
+---
+
+# 18. Undo Unstaged Changes
+
+```bash
+git checkout -- filename
+```
+
+Example:
+
+```bash
+git checkout -- index.ts
+```
+
+---
+
+# 19. Unstage File
+
+```bash
+git restore --staged filename
+```
+
+Example:
+
+```bash
+git restore --staged package.json
+```
+
+---
+
+# 20. Reset Last Commit
+
+Keep changes:
+
+```bash
+git reset --soft HEAD~1
+```
+
+Remove changes:
+
+```bash
+git reset --hard HEAD~1
+```
+
+⚠️ Hard reset deletes changes permanently.
+
+---
+
+# 21. Stash Temporary Changes
+
+Save changes temporarily:
+
+```bash
+git stash
+```
+
+Restore stashed changes:
+
+```bash
+git stash pop
+```
+
+---
+
+# 22. View Differences
+
+```bash
+git diff
+```
+
+View staged differences:
+
+```bash
+git diff --staged
+```
+
+---
+
+# 23. Remove Tracked File
+
+```bash
+git rm filename
+```
+
+---
+
+# 24. Rename File
+
+```bash
+git mv old-name new-name
+```
+
+---
+
+# 25. Check Current Config
+
+```bash
+git config --list
+```
+
+---
+
+# 26. Set Git Username and Email
+
+```bash
+git config --global user.name "Your Name"
+```
+
+```bash
+git config --global user.email "you@example.com"
+```
+
+---
+
+# Most Common Real-World Flow
+
+```bash
+# Initialize repo
+git init
+
+# Add files
+git add .
+
+# Commit
+git commit -m "initial commit"
+
+# Create branch
+git checkout -b feature-auth
+
+# Push to github
+git push -u origin main
+```
+
+---
+
+# Important Git Concepts
+
+## Git Areas
+
+| Area              | Meaning              |
+| ----------------- | -------------------- |
+| Working Directory | Current file changes |
+| Staging Area      | Prepared changes     |
+| Repository        | Committed history    |
+
+---
+
+## Basic Workflow
+
+```text
+Edit files
+   ↓
+git add .
+   ↓
+git commit -m "message"
+   ↓
+git push
+```
+
+---
+
+## HEAD Meaning
+
+```text
+HEAD = current commit/position
+```
+
+Example:
+
+```bash
+git reset --soft HEAD~1
+```
+
+Means:
+
+- move back 1 commit
+- keep file changes
+
+---
+
+# Recommended Minimal Daily Commands
+
+```bash
+git status
+git add .
+git commit -m "message"
+git pull
+git push
+```
