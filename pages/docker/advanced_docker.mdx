@@ -1,0 +1,840 @@
+# Advanced Docker Commands and Production Guide
+
+# Table of Contents
+
+1. Docker Architecture
+2. Images vs Containers
+3. Layers and Caching
+4. Advanced Build Commands
+5. Container Lifecycle
+6. Networking Deep Dive
+7. Volumes and Persistent Storage
+8. Environment Variables
+9. Multi-Stage Builds
+10. Docker Compose
+11. Logs and Monitoring
+12. Container Debugging
+13. Health Checks
+14. Restart Policies
+15. Resource Limits
+16. Docker Registry
+17. Docker Hub vs Private Registry
+18. Security Best Practices
+19. Production Dockerfile Optimization
+20. Cleanup and Maintenance
+21. Useful Real-World Commands
+22. Production Deployment Workflow
+
+---
+
+# 1. Docker Architecture
+
+Docker has several major components:
+
+| Component     | Purpose                |
+| ------------- | ---------------------- |
+| Docker Engine | Main runtime           |
+| Docker CLI    | Command line interface |
+| Docker Daemon | Background service     |
+| Images        | Blueprints/templates   |
+| Containers    | Running instances      |
+| Registry      | Image storage          |
+
+---
+
+# Docker Workflow
+
+```text
+Dockerfile
+   ↓
+docker build
+   ↓
+Image
+   ↓
+docker run
+   ↓
+Container
+```
+
+---
+
+# 2. Images vs Containers
+
+## Image
+
+Read-only blueprint.
+
+Contains:
+
+- OS layer
+- runtime
+- dependencies
+- app code
+
+Example:
+
+```bash
+docker images
+```
+
+---
+
+## Container
+
+Running instance of image.
+
+Example:
+
+```bash
+docker ps
+```
+
+---
+
+## Analogy
+
+| Concept   | Real Life      |
+| --------- | -------------- |
+| Image     | Class/template |
+| Container | Running object |
+
+---
+
+# 3. Layers and Caching
+
+Docker images are layered.
+
+Example:
+
+```Dockerfile
+FROM node:20
+COPY package*.json ./
+RUN npm install
+COPY . .
+```
+
+Each instruction creates a layer.
+
+---
+
+## Why Order Matters
+
+This is optimized:
+
+```Dockerfile
+COPY package*.json ./
+RUN npm install
+COPY . .
+```
+
+Because dependency layer gets cached.
+
+---
+
+## Bad Example
+
+```Dockerfile
+COPY . .
+RUN npm install
+```
+
+Every code change invalidates cache.
+
+---
+
+# 4. Advanced Build Commands
+
+## Build Image
+
+```bash
+docker build -t myapp .
+```
+
+---
+
+## Build Without Cache
+
+```bash
+docker build --no-cache -t myapp .
+```
+
+---
+
+## Build Specific Dockerfile
+
+```bash
+docker build -f Dockerfile.prod -t myapp .
+```
+
+---
+
+## Build with Build Args
+
+Dockerfile:
+
+```Dockerfile
+ARG NODE_ENV
+```
+
+Build:
+
+```bash
+docker build --build-arg NODE_ENV=production -t myapp .
+```
+
+---
+
+# 5. Container Lifecycle
+
+## Run Container
+
+```bash
+docker run myapp
+```
+
+---
+
+## Run Detached
+
+```bash
+docker run -d myapp
+```
+
+---
+
+## Start Existing Container
+
+```bash
+docker start container-name
+```
+
+---
+
+## Stop Container
+
+```bash
+docker stop container-name
+```
+
+---
+
+## Restart Container
+
+```bash
+docker restart container-name
+```
+
+---
+
+## Kill Container Immediately
+
+```bash
+docker kill container-name
+```
+
+---
+
+# 6. Networking Deep Dive
+
+## Port Mapping
+
+```bash
+docker run -p 8000:8000 app
+```
+
+Meaning:
+
+```text
+HOST_PORT:CONTAINER_PORT
+```
+
+---
+
+## View Networks
+
+```bash
+docker network ls
+```
+
+---
+
+## Create Custom Network
+
+```bash
+docker network create backend-network
+```
+
+---
+
+## Run Container in Network
+
+```bash
+docker run --network backend-network app
+```
+
+---
+
+## Inspect Network
+
+```bash
+docker network inspect backend-network
+```
+
+---
+
+# 7. Volumes and Persistent Storage
+
+Containers are ephemeral.
+
+Without volumes:
+
+- data disappears after container deletion
+
+---
+
+## Create Volume
+
+```bash
+docker volume create mysql-data
+```
+
+---
+
+## List Volumes
+
+```bash
+docker volume ls
+```
+
+---
+
+## Use Volume
+
+```bash
+docker run -v mysql-data:/var/lib/mysql mysql
+```
+
+---
+
+## Bind Mount
+
+```bash
+docker run -v $(pwd):/app app
+```
+
+Useful for development.
+
+---
+
+# 8. Environment Variables
+
+## Pass Single Variable
+
+```bash
+docker run -e PORT=8000 app
+```
+
+---
+
+## Pass Env File
+
+```bash
+docker run --env-file .env app
+```
+
+---
+
+## Define ENV in Dockerfile
+
+```Dockerfile
+ENV NODE_ENV=production
+```
+
+---
+
+# 9. Multi-Stage Builds
+
+Very important for production.
+
+## Example
+
+```Dockerfile
+# Build stage
+FROM node:20 AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+
+RUN npm install --only=production
+
+CMD ["node", "dist/index.js"]
+```
+
+---
+
+## Benefits
+
+- smaller image
+- faster deployment
+- more secure
+- no dev dependencies
+
+---
+
+# 10. Docker Compose
+
+Manage multi-container applications.
+
+## Example
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  mysql:
+    image: mysql:8
+```
+
+---
+
+## Start Compose
+
+```bash
+docker compose up
+```
+
+---
+
+## Detached Mode
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Stop Compose
+
+```bash
+docker compose down
+```
+
+---
+
+# 11. Logs and Monitoring
+
+## View Logs
+
+```bash
+docker logs container-name
+```
+
+---
+
+## Live Logs
+
+```bash
+docker logs -f container-name
+```
+
+---
+
+## Resource Usage
+
+```bash
+docker stats
+```
+
+Shows:
+
+- CPU
+- memory
+- network
+- disk
+
+---
+
+# 12. Container Debugging
+
+## Enter Container Shell
+
+```bash
+docker exec -it container-name sh
+```
+
+---
+
+## Bash Shell
+
+```bash
+docker exec -it container-name bash
+```
+
+---
+
+## Inspect Container
+
+```bash
+docker inspect container-name
+```
+
+---
+
+## View Processes
+
+```bash
+docker top container-name
+```
+
+---
+
+# 13. Health Checks
+
+Dockerfile:
+
+```Dockerfile
+HEALTHCHECK CMD curl --fail http://localhost:8000 || exit 1
+```
+
+---
+
+## Check Health
+
+```bash
+docker ps
+```
+
+Shows:
+
+```text
+healthy
+unhealthy
+starting
+```
+
+---
+
+# 14. Restart Policies
+
+## Always Restart
+
+```bash
+docker run --restart always app
+```
+
+---
+
+## Restart Unless Stopped
+
+```bash
+docker run --restart unless-stopped app
+```
+
+---
+
+## Restart on Failure
+
+```bash
+docker run --restart on-failure app
+```
+
+---
+
+# 15. Resource Limits
+
+## Limit Memory
+
+```bash
+docker run -m 512m app
+```
+
+---
+
+## Limit CPU
+
+```bash
+docker run --cpus="1.5" app
+```
+
+---
+
+# 16. Docker Registry
+
+Registry stores images.
+
+Examples:
+
+- Docker Hub
+- AWS ECR
+- GitHub Container Registry
+- GitLab Registry
+
+---
+
+## Login
+
+```bash
+docker login
+```
+
+---
+
+## Tag Image
+
+```bash
+docker tag myapp username/myapp:v1
+```
+
+---
+
+## Push Image
+
+```bash
+docker push username/myapp:v1
+```
+
+---
+
+# 17. Docker Hub vs Private Registry
+
+| Type             | Use Case                |
+| ---------------- | ----------------------- |
+| Docker Hub       | public/simple           |
+| Private Registry | enterprise/private apps |
+
+---
+
+# 18. Security Best Practices
+
+## Use Smaller Images
+
+Prefer:
+
+```Dockerfile
+node:20-alpine
+```
+
+---
+
+## Avoid Root User
+
+```Dockerfile
+USER node
+```
+
+---
+
+## Do Not Store Secrets in Dockerfile
+
+Bad:
+
+```Dockerfile
+ENV DB_PASSWORD=secret
+```
+
+Use:
+
+- env files
+- secrets manager
+
+---
+
+## Scan Vulnerabilities
+
+```bash
+docker scan myapp
+```
+
+---
+
+# 19. Production Dockerfile Optimization
+
+## Development Dockerfile
+
+```Dockerfile
+FROM node:20
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "start"]
+```
+
+---
+
+## Production Dockerfile
+
+```Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+RUN npm run build
+
+CMD ["node", "dist/index.js"]
+```
+
+---
+
+## Why Better
+
+- smaller image
+- faster startup
+- deterministic install
+- no dev dependencies
+
+---
+
+# 20. Cleanup and Maintenance
+
+## Remove Stopped Containers
+
+```bash
+docker container prune
+```
+
+---
+
+## Remove Unused Images
+
+```bash
+docker image prune
+```
+
+---
+
+## Remove Everything Unused
+
+```bash
+docker system prune
+```
+
+---
+
+## Remove Volumes Too
+
+```bash
+docker system prune -a --volumes
+```
+
+⚠️ Dangerous.
+
+---
+
+# 21. Useful Real-World Commands
+
+## See All Docker Info
+
+```bash
+docker info
+```
+
+---
+
+## Docker Version
+
+```bash
+docker version
+```
+
+---
+
+## Rename Container
+
+```bash
+docker rename old-name new-name
+```
+
+---
+
+## Copy Files From Container
+
+```bash
+docker cp container:/app/log.txt .
+```
+
+---
+
+## Copy Into Container
+
+```bash
+docker cp local.txt container:/app
+```
+
+---
+
+# 22. Production Deployment Workflow
+
+## Recommended Workflow
+
+```bash
+# Build image
+docker build -t myapp:v1 .
+
+# Run container
+docker run -d \
+  --name backend \
+  --restart unless-stopped \
+  -p 8000:8000 \
+  --env-file .env \
+  myapp:v1
+```
+
+---
+
+# Professional Docker Best Practices
+
+## Recommended
+
+- use multi-stage builds
+- use docker compose
+- use restart policies
+- use health checks
+- use smaller base images
+- never store secrets in image
+- pin versions
+- use volumes for databases
+- separate development and production configs
+
+---
+
+# Most Important Advanced Docker Commands
+
+```bash
+docker logs -f container
+docker exec -it container sh
+docker inspect container
+docker stats
+docker network ls
+docker volume ls
+docker compose up -d
+docker build --no-cache -t app .
+docker system prune
+```

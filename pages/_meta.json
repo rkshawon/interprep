@@ -11,6 +11,14 @@
     "title": "React.js",
     "type": "page"
   },
+  "git": {
+    "title": "Git",
+    "type": "page"
+  },
+  "docker": {
+    "title": "Docker",
+    "type": "page"
+  },
   "practice": {
     "title": "Practice",
     "type": "page"
