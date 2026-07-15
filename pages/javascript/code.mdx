@@ -1,54 +1,203 @@
-#### Write a Program to use a callback function?
+# JavaScript Interview Questions & Answers 🚀
+
+## 1. Write a program to use a callback function.
+
+A **callback function** is a function passed as an argument to another function. The callback is executed after the outer function performs its task.
+
+### Example
 
 ```javascript
-function great(mgs, fn) {
-  fn(mgs);
+function greet(message, callback) {
+  callback(message);
 }
-great("Message", (mgs) => console.log(mgs));
+
+greet("Message", (message) => {
+  console.log(message);
+});
 ```
 
-###### Output: `Message`
+### Output
 
-#### Write a Program to add a property to an object and delete a property from an object?
+```text
+Message
+```
 
-###### Add a property from an object:
+---
+
+## 2. Write a program to add a property to an object and delete a property from an object.
+
+### Add a Property
+
+Properties can be added using **dot notation** or **bracket notation**.
 
 ```javascript
-const obj = { name: "Kiba" };
+const obj = {
+  name: "Riya",
+};
+
 obj.age = 21;
+
 console.log(obj);
 ```
 
-###### Output: `{ name: 'Riya', age: 21 }`
-
-###### Delete a property from an object:
+### Output
 
 ```javascript
-const obj = { name: "Riya", age: 21 };
+{
+  name: "Riya",
+  age: 21
+}
+```
+
+### Delete a Property
+
+The `delete` operator removes a property from an object.
+
+```javascript
+const obj = {
+  name: "Riya",
+  age: 21,
+};
+
 delete obj.age;
+
 console.log(obj);
 ```
 
-###### Output: `{ name: 'Riya' }`
-
-#### Write a function which duplicates the array items?
+### Output
 
 ```javascript
-function dup(arr) {
+{
+  name: "Riya";
+}
+```
+
+---
+
+## 3. Write a function that duplicates the array items.
+
+There are multiple ways to duplicate an array.
+
+### Using the Spread Operator (Recommended)
+
+```javascript
+function duplicateArray(arr) {
   return [...arr, ...arr];
 }
-console.log(dup([1, 2, 3]));
+
+console.log(duplicateArray([1, 2, 3]));
 ```
 
-###### Output: `[1, 2, 3, 1, 2, 3]`
+### Output
 
-#### What is the output of this code?
+```text
+[1, 2, 3, 1, 2, 3]
+```
+
+### Using `concat()`
+
+```javascript
+function duplicateArray(arr) {
+  return arr.concat(arr);
+}
+
+console.log(duplicateArray([1, 2, 3]));
+```
+
+### Output
+
+```text
+[1, 2, 3, 1, 2, 3]
+```
+
+---
+
+## 4. What is the output of the following code?
 
 ```javascript
 console.log(fn);
+
 var fn = function () {
   console.log("fn");
 };
 ```
 
-###### Output: `TypeError: fn is not a function`
+### Output
+
+```text
+undefined
+```
+
+### Explanation
+
+`var` declarations are **hoisted** to the top of their scope, but **only the declaration is hoisted**, **not the assignment**.
+
+JavaScript internally treats the code like this:
+
+```javascript
+var fn;
+
+console.log(fn); // undefined
+
+fn = function () {
+  console.log("fn");
+};
+```
+
+Therefore, the output is:
+
+```text
+undefined
+```
+
+> **Note:** It does **not** throw `TypeError: fn is not a function` because `fn` is only being logged, **not invoked**.
+
+---
+
+### What if we invoke it?
+
+```javascript
+fn();
+
+var fn = function () {
+  console.log("fn");
+};
+```
+
+### Output
+
+```text
+TypeError: fn is not a function
+```
+
+### Why?
+
+Internally it becomes:
+
+```javascript
+var fn;
+
+fn(); // fn is undefined
+
+fn = function () {
+  console.log("fn");
+};
+```
+
+Since `undefined()` is being executed, JavaScript throws:
+
+```text
+TypeError: fn is not a function
+```
+
+---
+
+## Key Takeaways
+
+- A **callback function** is passed as an argument to another function.
+- Object properties can be added using **dot notation** or **bracket notation**.
+- Use the **`delete`** operator to remove object properties.
+- Arrays can be duplicated using the **spread operator** or **`concat()`**.
+- `var` variables are **hoisted**, but their **assignments are not**.
+- `console.log(fn)` before assignment prints `undefined`.
+- Calling `fn()` before assignment throws `TypeError: fn is not a function`.
