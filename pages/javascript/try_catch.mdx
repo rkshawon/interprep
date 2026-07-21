@@ -1,1 +1,772 @@
-## Understanding `this` in JavaScript
+---
+title: Try...Catch in JavaScript & TypeScript
+description: Complete beginner to advanced guide for mastering try...catch from an interview perspective.
+---
+
+# JavaScript `try...catch` — Beginner to Advanced 🚀
+
+## What is Exception Handling?
+
+Imagine you're writing code that reads a file, calls an API, or parses JSON.
+
+Sometimes things go wrong.
+
+Instead of crashing your application, JavaScript allows you to **catch** the error and decide what to do.
+
+This process is called **Exception Handling**.
+
+```text
+Without try...catch
+
+Program
+   │
+   ▼
+Error ❌
+   │
+Program Stops
+```
+
+```text
+With try...catch
+
+Program
+   │
+   ▼
+try
+   │
+   ├── Success ✅
+   │      │
+   │      ▼
+   │ Continue
+   │
+   └── Error ❌
+          │
+          ▼
+       catch
+          │
+          ▼
+ Continue Running
+```
+
+---
+
+# Why do we need try...catch?
+
+Without error handling:
+
+```javascript
+const user = JSON.parse("{");
+console.log(user);
+```
+
+Output
+
+```text
+SyntaxError: Unexpected end of JSON input
+```
+
+Everything stops.
+
+With try...catch:
+
+```javascript
+try {
+  const user = JSON.parse("{");
+  console.log(user);
+} catch (error) {
+  console.log("Invalid JSON");
+}
+
+console.log("Application still running");
+```
+
+Output
+
+```text
+Invalid JSON
+Application still running
+```
+
+---
+
+# Syntax
+
+```javascript
+try {
+  // risky code
+} catch (error) {
+  // handle error
+}
+```
+
+Flow
+
+```text
+try
+ │
+ ├── No Error
+ │      │
+ │      ▼
+ │ Continue
+ │
+ └── Error
+        │
+        ▼
+     catch
+```
+
+---
+
+# Example 1
+
+```javascript
+try {
+  console.log("Hello");
+} catch (error) {
+  console.log(error);
+}
+```
+
+Output
+
+```text
+Hello
+```
+
+Catch never executes because nothing failed.
+
+---
+
+# Example 2
+
+```javascript
+try {
+  console.log(name);
+} catch (error) {
+  console.log(error);
+}
+```
+
+Output
+
+```text
+ReferenceError: name is not defined
+```
+
+---
+
+# What is the error object?
+
+The variable inside catch contains information.
+
+```javascript
+try {
+  console.log(age);
+} catch (error) {
+  console.log(error);
+}
+```
+
+Output
+
+```text
+ReferenceError: age is not defined
+```
+
+The object contains
+
+```javascript
+error.name;
+error.message;
+error.stack;
+```
+
+Example
+
+```javascript
+try {
+  JSON.parse("{");
+} catch (error) {
+  console.log(error.name);
+  console.log(error.message);
+}
+```
+
+Output
+
+```text
+SyntaxError
+Unexpected end of JSON input
+```
+
+---
+
+# Different Types of Errors
+
+## ReferenceError
+
+```javascript
+console.log(user);
+```
+
+---
+
+## TypeError
+
+```javascript
+const person = null;
+
+person.name;
+```
+
+Output
+
+```text
+Cannot read properties of null
+```
+
+---
+
+## SyntaxError
+
+```javascript
+JSON.parse("{");
+```
+
+---
+
+## RangeError
+
+```javascript
+new Array(-1);
+```
+
+---
+
+## URIError
+
+```javascript
+decodeURIComponent("%");
+```
+
+---
+
+# finally
+
+Sometimes we want code to execute whether an error happens or not.
+
+```javascript
+try {
+  console.log("Start");
+} catch (error) {
+  console.log(error);
+} finally {
+  console.log("Always executes");
+}
+```
+
+Output
+
+```text
+Start
+Always executes
+```
+
+Flow
+
+```text
+try
+ │
+ ├── success
+ │      │
+ │      ▼
+ │ finally
+ │
+ └── error
+        │
+        ▼
+      catch
+        │
+        ▼
+     finally
+```
+
+---
+
+# throw
+
+You can create your own errors.
+
+```javascript
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error("Cannot divide by zero");
+  }
+
+  return a / b;
+}
+```
+
+Usage
+
+```javascript
+try {
+  divide(10, 0);
+} catch (error) {
+  console.log(error.message);
+}
+```
+
+Output
+
+```text
+Cannot divide by zero
+```
+
+---
+
+# Custom Error
+
+```javascript
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+```
+
+Usage
+
+```javascript
+function register(name) {
+  if (!name) {
+    throw new ValidationError("Name required");
+  }
+}
+```
+
+---
+
+# Nested try...catch
+
+```javascript
+try {
+  try {
+    JSON.parse("{");
+  } catch {
+    console.log("Inner catch");
+  }
+} catch {
+  console.log("Outer catch");
+}
+```
+
+Output
+
+```text
+Inner catch
+```
+
+---
+
+# Rethrowing Errors
+
+Sometimes you don't want to handle it.
+
+```javascript
+try {
+  JSON.parse("{");
+} catch (error) {
+  console.log("Logging...");
+
+  throw error;
+}
+```
+
+---
+
+# Async try...catch
+
+Most common interview question.
+
+Without try...catch
+
+```javascript
+async function getUsers() {
+  const response = await fetch("/users");
+
+  const users = await response.json();
+
+  return users;
+}
+```
+
+If fetch fails
+
+❌ Unhandled Promise Rejection
+
+---
+
+Correct way
+
+```javascript
+async function getUsers() {
+  try {
+    const response = await fetch("/users");
+
+    const users = await response.json();
+
+    return users;
+  } catch (error) {
+    console.log(error.message);
+
+    return [];
+  }
+}
+```
+
+---
+
+# Promise vs try...catch
+
+Using Promise
+
+```javascript
+fetch("/users")
+  .then((res) => res.json())
+  .catch((error) => console.log(error));
+```
+
+Using async/await
+
+```javascript
+try {
+  const users = await fetch("/users");
+} catch (error) {
+  console.log(error);
+}
+```
+
+Interview preference:
+
+Modern applications generally use **async/await + try...catch** because it is easier to read.
+
+---
+
+# What try...catch CANNOT catch
+
+## Syntax errors during parsing
+
+```javascript
+if (
+```
+
+The program never starts.
+
+---
+
+## Errors in another asynchronous callback
+
+```javascript
+try {
+  setTimeout(() => {
+    throw new Error("Boom");
+  }, 1000);
+} catch (error) {
+  console.log(error);
+}
+```
+
+This will NOT work.
+
+Correct
+
+```javascript
+setTimeout(() => {
+  try {
+    throw new Error("Boom");
+  } catch (error) {
+    console.log(error);
+  }
+}, 1000);
+```
+
+---
+
+# Common Real-world Examples
+
+## JSON Parsing
+
+```javascript
+try {
+  const data = JSON.parse(response);
+} catch {
+  console.log("Invalid JSON");
+}
+```
+
+---
+
+## Local Storage
+
+```javascript
+try {
+  localStorage.setItem("user", JSON.stringify(user));
+} catch {
+  console.log("Storage full");
+}
+```
+
+---
+
+## API Calls
+
+```javascript
+try {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Request failed");
+  }
+
+  return await response.json();
+} catch (error) {
+  console.log(error.message);
+}
+```
+
+---
+
+# Bad Practices ❌
+
+## Empty catch
+
+```javascript
+try {
+} catch {}
+```
+
+Never do this.
+
+---
+
+## Swallowing errors
+
+```javascript
+try {
+  doSomething();
+} catch {
+  return;
+}
+```
+
+Debugging becomes impossible.
+
+---
+
+## Using try...catch everywhere
+
+Wrong
+
+```javascript
+try {
+  console.log(name);
+} catch {}
+```
+
+Use it only around operations that may genuinely fail.
+
+---
+
+# Best Practices ✅
+
+✔ Catch only expected errors
+
+✔ Log unexpected errors
+
+✔ Create custom Error classes
+
+✔ Don't ignore errors
+
+✔ Use finally for cleanup
+
+✔ Keep try blocks small
+
+✔ Throw meaningful messages
+
+---
+
+# Interview Questions
+
+## What is try...catch?
+
+A mechanism to handle runtime exceptions without crashing the application.
+
+---
+
+## When does catch execute?
+
+Only when an exception occurs inside the try block.
+
+---
+
+## Does finally always execute?
+
+Yes.
+
+Except when the process terminates immediately.
+
+---
+
+## Difference between throw and throws?
+
+JavaScript has **throw**.
+
+There is **no throws keyword**.
+
+---
+
+## Difference between throw new Error() and console.error()?
+
+```javascript
+throw new Error();
+```
+
+Stops execution.
+
+```javascript
+console.error();
+```
+
+Only logs.
+
+---
+
+## Can finally override return?
+
+Yes.
+
+```javascript
+function demo() {
+  try {
+    return 1;
+  } finally {
+    return 2;
+  }
+}
+
+console.log(demo());
+```
+
+Output
+
+```text
+2
+```
+
+Interviewers love this question.
+
+---
+
+## Why use custom errors?
+
+Instead of
+
+```javascript
+throw new Error("Invalid");
+```
+
+Create
+
+```javascript
+throw new ValidationError("Email required");
+```
+
+Now you can distinguish error types.
+
+---
+
+## Can try...catch catch Promise rejection?
+
+Yes, **only with await**.
+
+```javascript
+try {
+  await fetch(url);
+} catch (error) {
+  console.log(error);
+}
+```
+
+---
+
+## Difference between Error and Exception?
+
+JavaScript treats thrown `Error` objects as exceptions.
+
+An **Error** is an object.
+
+An **Exception** is the event of throwing that object.
+
+---
+
+# Advanced Interview Example
+
+```typescript
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message);
+  }
+}
+
+async function getUser(id: number) {
+  try {
+    const response = await fetch(`/users/${id}`);
+
+    if (!response.ok) {
+      throw new ApiError("User not found", response.status);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof ApiError) {
+      console.log(error.status);
+      console.log(error.message);
+    } else {
+      console.log("Unknown error");
+    }
+  } finally {
+    console.log("Request finished");
+  }
+}
+```
+
+---
+
+# Cheat Sheet
+
+| Keyword      | Purpose               |
+| ------------ | --------------------- |
+| `try`        | Wrap risky code       |
+| `catch`      | Handle errors         |
+| `finally`    | Always executes       |
+| `throw`      | Create an error       |
+| `Error`      | Built-in error object |
+| `instanceof` | Check error type      |
+
+---
+
+# Key Takeaways
+
+- `try` contains risky code.
+- `catch` runs only when an exception is thrown.
+- `finally` executes whether an error occurs or not.
+- Use `throw` to create meaningful custom errors.
+- Prefer `async/await` with `try...catch` for asynchronous code.
+- Never silently ignore errors.
+- Keep `try` blocks focused and handle only expected failures.
+- Understanding `try...catch`, `throw`, `finally`, custom errors, and async error handling is essential for JavaScript and TypeScript interviews.
